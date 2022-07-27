@@ -1,5 +1,5 @@
 {
-    "name": "react-template",
+    "name": "athletle",
     "version": "1.0.0",
     "description": "",
     "scripts": {
@@ -24,9 +24,12 @@
     },
     "author": "",
     "dependencies": {
-        "@emotion/react": "^11.8.2",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2"
+        "@chakra-ui/react": "^2.2.4",
+        "@emotion/react": "^11.9.3",
+        "@emotion/styled": "^11.9.3",
+        "framer-motion": "^6.5.1",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
     },
     "devDependencies": {
         "@babel/core": "^7.17.5",
@@ -39,8 +42,8 @@
         "@testing-library/react": "^12.1.4",
         "@testing-library/user-event": "^13.5.0",
         "@types/jest": "^27.4.1",
-        "@types/react": "^17.0.40",
-        "@types/react-dom": "^17.0.13",
+        "@types/react": "^18.0.15",
+        "@types/react-dom": "^18.0.6s",
         "@typescript-eslint/eslint-plugin": "^5.14.0",
         "@typescript-eslint/parser": "^5.14.0",
         "babel-loader": "^8.2.3",

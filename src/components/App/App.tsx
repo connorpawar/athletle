@@ -1,14 +1,24 @@
-import type { ReactElement } from "react";
-import Logo from "./react.svg";
-import { RandomNumber } from "~/components/RandomNumber";
-import { randomDefaults } from "~/config/constants";
+import { ReactElement, useState } from "react";
+import { ChakraProvider, Fade, SlideFade } from '@chakra-ui/react'
+import { CallToAction } from "./CallToAction";
+import theme from "~/config/theme";
+import { GameBoard } from "../Game/GameBoard";
 
 export function App(): ReactElement {
+	const [isGameBoardOpen, setIsGameBoardOpen] = useState(false);
+
+	const openGameBoard = setIsGameBoardOpen.bind(null, true);
+	// const closeGameBoard = setIsGameBoardOpen.bind(null, false);
+
     return (
-        <div className="center">
-            <img src={Logo} alt="React Logo" />
-            <br />
-            Hello World <RandomNumber min={randomDefaults.MIN} max={randomDefaults.MAX} />
-        </div>
+		<ChakraProvider theme={theme}>
+			{isGameBoardOpen ? (
+				<SlideFade in offsetY='20px'>
+					<GameBoard />
+				</SlideFade>
+			) : (
+				<CallToAction onButtonClick={openGameBoard} />
+			)}
+		</ChakraProvider>
     );
 }
