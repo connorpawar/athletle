@@ -67,7 +67,7 @@ export function CallToAction({
                             _hover={{ bg: "red.500" }}
 							onClick={onButtonClick}
                         >
-                            Start Guessing
+                            Statistics
                         </Button>
                         <Button rounded={"full"} size={"lg"} fontWeight={"normal"} px={6}>
                             How It Works
