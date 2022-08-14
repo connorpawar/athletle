@@ -4,7 +4,7 @@ import { App } from "./App";
 describe("App", () => {
     test("is rendered", async () => {
         render(<App />);
-        await screen.findByText("Hello World", {
+        await screen.findByText("Athletle", {
             exact: false,
         });
     });
