@@ -55,7 +55,7 @@ const StatsCard = (props: StatsCardProps) => {
             <Flex justifyContent={"space-between"}>
                 <Box pl={{ base: 1, md: 2 }}>
                     <StatLabel fontWeight={"light"}>{title}</StatLabel>
-                    <StatNumber fontSize={"xl"} fontWeight={"medium"}>
+                    <StatNumber fontSize={"md"} fontWeight={"medium"}>
                         {stat}
                     </StatNumber>
                 </Box>
