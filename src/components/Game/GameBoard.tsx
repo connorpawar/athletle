@@ -12,30 +12,26 @@ import {
     Stack,
     useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { PlayerModel, TeamModel } from "~/types/Domain";
+import { ReactElement, useState } from "react";
+import { PlayerModel } from "~/types/Domain";
 import { SearchBar } from "../App/SearchBar";
 import ColorfulBackdrop from "../Misc/ColorfulBackdrop";
 import { GuessCard } from "./GuessCard";
 import { PlayerCard } from "./PlayerCard";
 
-export const GameBoard = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const [guessInput, setGuessInput] = useState("");
-	const [guesses, setGuesses] = useState<PlayerModel[]>([]);
-    // const [guesses, setGuesses] = useState<PlayerModel[]>([
-    //     {
-    //         DisplayName: "Lebron James",
-    //         Team: {
-    //             DisplayName: "Los Angeles Lakers",
-    //             ShortDisplayName: "Lakers",
-    //         } as TeamModel,
-    //     } as PlayerModel,
-    // ]);
+interface GameBoardProps {
+    initialGuess: PlayerModel;
+}
 
-    const onSubmit = () => {
-        console.log(guessInput);
-        setGuessInput("");
+export function GameBoard(props: GameBoardProps): ReactElement {
+    const { initialGuess } = props;
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [guesses, setGuesses] = useState<PlayerModel[]>([initialGuess]);
+
+    const onSubmit = (guess: PlayerModel) => {
+        console.log(guess.DisplayName);
+        setGuesses((prev) => [...prev, guess]);
     };
 
     return (
@@ -47,6 +43,9 @@ export const GameBoard = () => {
                 direction={{ base: "column", md: "row" }}
             >
                 <Stack flex={1} spacing={{ base: 5, md: 10 }}>
+				<Button maxW="sm" onClick={onOpen}>
+                    View Silhouette
+                </Button>
                     <Modal onClose={onClose} isOpen={isOpen} isCentered>
                         <ModalOverlay />
                         <ModalContent>
@@ -61,10 +60,7 @@ export const GameBoard = () => {
                         </ModalContent>
                     </Modal>
                     <Center mb="12em">
-                        <Button maxW="sm" onClick={onOpen}>
-                            View Silhouette
-                        </Button>
-                        <SearchBar guessInput={guessInput} setGuessInput={setGuessInput} submitAction={onSubmit} />
+                        <SearchBar submitAction={onSubmit} />
                     </Center>
                     {guesses.map((g, i) => (
                         <ColorfulBackdrop index={i}>
@@ -75,4 +71,4 @@ export const GameBoard = () => {
             </Stack>
         </Container>
     );
-};
+}
