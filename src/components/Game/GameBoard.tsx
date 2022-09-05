@@ -13,7 +13,7 @@ import {
     useDisclosure,
 } from "@chakra-ui/react";
 import { ReactElement, useState } from "react";
-import { PlayerModel } from "~/types/Domain";
+import { PlayerModel, TeamModel } from "~/types/Domain";
 import { SearchBar } from "../App/SearchBar";
 import ColorfulBackdrop from "../Misc/ColorfulBackdrop";
 import { GuessCard } from "./GuessCard";
@@ -27,6 +27,31 @@ export function GameBoard(props: GameBoardProps): ReactElement {
     const { initialGuess } = props;
 
     const { isOpen, onOpen, onClose } = useDisclosure();
+	const [answer, setAnswer] = useState<PlayerModel>({
+		DisplayName: "",
+		Jersey: "",
+		Height: 0,
+		Weight: 0,
+		DateOfBirth: new Date(),
+		DebutYear: 0,
+		Team: {
+			DisplayName: "",
+			ShortDisplayName: "",
+			Logo: "",
+			Abbreviation: "",
+			Group: {
+				IsConference: true,
+				Name: "",
+				Logo: "",
+				Abbreviation: ""
+			}
+		},
+		Position: {
+			Name: "",
+			DisplayName: "",
+			Abbreviation: ""
+		}
+	});
     const [guesses, setGuesses] = useState<PlayerModel[]>([initialGuess]);
 
     const onSubmit = (guess: PlayerModel) => {
@@ -64,7 +89,7 @@ export function GameBoard(props: GameBoardProps): ReactElement {
                     </Center>
                     {guesses.map((g, i) => (
                         <ColorfulBackdrop index={i}>
-                            <GuessCard guess={g} />
+                            <GuessCard guess={g} answer={answer}/>
                         </ColorfulBackdrop>
                     ))}
                 </Stack>

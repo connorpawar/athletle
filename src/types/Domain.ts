@@ -30,5 +30,5 @@ export interface GroupModel {
 	Name: string;
 	Abbreviation: string;
 	Logo: string;
-	Parent: GroupModel;
+	Parent?: GroupModel;
 }
