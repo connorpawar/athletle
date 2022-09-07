@@ -19,8 +19,7 @@
         "list-outdated-dependencies": "npm-check-updates --format repo --peer",
         "update-dependencies": "npm-check-updates --peer -u && npm install && npm run lint:fix && npm run format && npm run release",
         "clean": "rm -rf node_modules coverage dist cache",
-        "clean:dist": "rm -rf dist",
-        "prepare": "husky install"
+        "clean:dist": "rm -rf dist"
     },
     "author": "",
     "dependencies": {
@@ -64,7 +63,6 @@
         "fork-ts-checker-webpack-plugin": "^7.2.1",
         "html-minimizer-webpack-plugin": "^3.5.0",
         "html-webpack-plugin": "^5.5.0",
-        "husky": "^7.0.4",
         "identity-obj-proxy": "^3.0.0",
         "jest": "^27.5.1",
         "lint-staged": "^12.3.5",
