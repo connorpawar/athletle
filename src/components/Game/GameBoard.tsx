@@ -52,7 +52,7 @@ export function GameBoard(props: GameBoardProps): ReactElement {
                             <ModalHeader>Who is it?</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
-                                <PlayerCard image="./silhouette.jpg" />
+                                <PlayerCard image="https://a.espncdn.com/i/headshots/nfl/players/full/4262197.png" />
                             </ModalBody>
                             <ModalFooter>
                                 <Button onClick={onClose}>Close</Button>
