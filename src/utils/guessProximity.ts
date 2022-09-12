@@ -1,20 +1,6 @@
 import { CardColor } from "~/components/Game/GuessCard";
 import { PlayerModel } from "~/types/Domain";
 
-// <StatsCard
-//                     title={"Team"}
-//                     stat={guess.Team.ShortDisplayName}
-//                     icon={<FaUserFriends size={"1em"} />}
-//                     color="None"
-//                 />
-//                 <StatsCard title="Conf." stat={"7"} icon={<FaMapMarkerAlt size={"1em"} />} color="None" />
-//                 <StatsCard title="Jersey" stat={"7"} icon={<FaTshirt size={"1em"} />} color="Yellow" />
-//                 <StatsCard title="Pos." stat={"7"} icon={<FaHardHat size={"1em"} />} color="None" />
-//                 <StatsCard title="Height" stat={"7"} icon={<FaTape size={"1em"} />} color="Green" />
-//                 <StatsCard title="Weight" stat={"7"} icon={<FaBalanceScale size={"1em"} />} color="None" />
-//                 <StatsCard title="Age" stat={"7"} icon={<FaAddressBook size={"1em"} />} color="None" />
-//                 <StatsCard title="Debuted"
-
 export interface GuessProximityResponse {
 	team: CardColor,
 	conference: CardColor,
@@ -31,6 +17,12 @@ export type GuessProximity = (
 	answer: PlayerModel
 ) => GuessProximityResponse;
 
+const calculateAge = (dob: Date): number => {
+	const ageDifMs = Date.now() - dob.getTime();
+	const ageDate = new Date(ageDifMs);
+	return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
 export const guessProximity: GuessProximity = (guess, answer) => {
 	let team: CardColor = "None";
 	let conference: CardColor = "None";
@@ -41,12 +33,42 @@ export const guessProximity: GuessProximity = (guess, answer) => {
 	let age: CardColor = "None";
 	let debuted: CardColor = "None";
 
-	if (guess.Team == answer.Team)
+	const guessJerseyNum = Number(guess.Jersey);
+	const answerJerseyNum = Number(answer.Jersey);
+
+	const guessAge = calculateAge(guess.DateOfBirth);
+	const answerAge = calculateAge(guess.DateOfBirth);
+
+	if (guess.Team.DisplayName === answer.Team.DisplayName)
 		team = "Green";
 
-	if (guess.Jersey == answer.Jersey)
+	if (guessJerseyNum === answerJerseyNum)
 		jersey = "Green";
-	
+	else if (Math.abs(guessJerseyNum - answerJerseyNum) < 3)
+		age = "Yellow";
+
+	if (guess.Position.DisplayName === answer.Position.DisplayName)
+		position = "Green";
+
+	if (guess.Height === answer.Height)
+		height = "Green";
+	else if (Math.abs(guess.Height - answer.Height) < 10)
+		height = "Yellow";
+
+	if (guess.Weight === answer.Weight)
+		weight = "Green";
+	else if (Math.abs(guess.Weight - answer.Weight) < 10)
+		weight = "Yellow";
+
+	if (guessAge === answerAge)
+		age = "Green";
+	else if (Math.abs(guessAge - answerAge) < 3)
+		age = "Yellow";
+
+	if (guess.DebutYear === answer.DebutYear)
+		debuted = "Green";
+	else if (Math.abs(guess.DebutYear - answer.DebutYear) < 3)
+		debuted = "Yellow";
 
 	return {
 		team,
