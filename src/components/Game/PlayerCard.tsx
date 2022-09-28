@@ -49,13 +49,7 @@ import {
 				filter: 'blur(20px)',
 			  },
 			}}>
-			<Image
-			  rounded={'lg'}
-			  height={230}
-			  width={282}
-			  objectFit={'contain'}
-			  src={image}
-			/>
+			<Silhouette height={230} width={282} objectFit={"contain"} src={image} />
 		  </Box>
 		  <Stack pt={10} align={'center'}>
 			<Text color={'gray.500'} fontSize={'sm'} textTransform={'uppercase'}>
