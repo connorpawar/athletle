@@ -2,6 +2,8 @@
 
 const HTMLMinimizerPlugin = require("html-minimizer-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const webpack = require("webpack");
+require("dotenv").config({ path: "./.env" });
 
 module.exports = function () {
     return {
@@ -9,6 +11,9 @@ module.exports = function () {
         plugins: [
             new MiniCssExtractPlugin({
                 filename: "[name].[contenthash].css",
+            }),
+            new webpack.DefinePlugin({
+                "process.env": JSON.stringify(process.env),
             }),
         ],
         module: {
