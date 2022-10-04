@@ -5,8 +5,8 @@ import {
 	Heading,
 	Text,
 	Stack,
-	Image,
   } from '@chakra-ui/react';
+import { Silhouette } from '../Misc/Silhouette';
   
   export interface PlayerCardProps {
 	image: string;
