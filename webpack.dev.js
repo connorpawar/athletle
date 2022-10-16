@@ -1,6 +1,8 @@
 /* eslint-env node */
 
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const webpack = require("webpack");
+require("dotenv").config({ path: "./.env.dev" });
 
 module.exports = function () {
     return {
@@ -8,6 +10,9 @@ module.exports = function () {
         plugins: [
             new ReactRefreshWebpackPlugin({
                 overlay: false,
+            }),
+            new webpack.DefinePlugin({
+                "process.env": JSON.stringify(process.env),
             }),
         ],
         module: {
