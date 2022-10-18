@@ -1,33 +1,32 @@
-import { ReactElement, useState } from "react";
 import { ChakraProvider, SlideFade } from "@chakra-ui/react";
-import { CallToAction } from "./CallToAction";
+import { useState } from "react";
+import type { ReactElement } from "react";
+import { CallToAction } from "~/components/App/CallToAction";
+import { SearchBar } from "~/components/App/SearchBar";
+import { GameBoard } from "~/components/Game/GameBoard";
 import theme from "~/config/theme";
-import { GameBoard } from "../Game/GameBoard";
-import { SearchBar } from "./SearchBar";
-import { PlayerModel } from "~/types/Domain";
+import type { PlayerModel } from "~/types/Domain";
 
 export function App(): ReactElement {
     const [isGameBoardOpen, setIsGameBoardOpen] = useState(false);
-	const [initialGuess, setInitialGuess] = useState<PlayerModel | null>(null);
+    const [initialGuess, setInitialGuess] = useState<PlayerModel | null>(null);
     const openGameBoard = setIsGameBoardOpen.bind(null, true);
 
-	const submitInitialGuess = (guess: PlayerModel) => {
-		setInitialGuess(guess);
-		openGameBoard();
-	};
+    function submitInitialGuess(guess: PlayerModel): void {
+        setInitialGuess(guess);
+        openGameBoard();
+    }
 
     return (
         <ChakraProvider theme={theme}>
             {isGameBoardOpen ? (
-                <SlideFade in offsetY="20px">
-                    <GameBoard initialGuess={initialGuess as PlayerModel}/>
+                <SlideFade in={true} offsetY="20px">
+                    <GameBoard initialGuess={initialGuess!} />
                 </SlideFade>
             ) : (
                 <>
                     <CallToAction onButtonClick={openGameBoard} />
-                    <SearchBar
-						submitAction={submitInitialGuess}
-					/>
+                    <SearchBar submitAction={submitInitialGuess} />
                 </>
             )}
         </ChakraProvider>
