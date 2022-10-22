@@ -38,6 +38,7 @@ export function PlayerCard({ image }: PlayerCardProps): ReactElement {
                         zIndex: -1,
                     }}
                     _groupHover={{
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         _after: {
                             filter: "blur(20px)",
                         },

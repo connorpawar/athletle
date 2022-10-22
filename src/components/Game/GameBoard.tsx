@@ -12,14 +12,16 @@ import {
     Stack,
     useDisclosure,
 } from "@chakra-ui/react";
-import { ReactElement, useState } from "react";
-import { PlayerModel, TeamModel } from "~/types/Domain";
+import type { ReactElement} from "react";
+import { useState } from "react";
 import { SearchBar } from "../App/SearchBar";
-import ColorfulBackdrop from "../Misc/ColorfulBackdrop";
+import { ColorfulBackdrop } from "../Misc/ColorfulBackdrop";
 import { GuessCard } from "./GuessCard";
 import { PlayerCard } from "./PlayerCard";
+// import { TeamModel } from "~/types/Domain";
+import type { PlayerModel} from "~/types/Domain";
 
-interface GameBoardProps {
+type GameBoardProps = {
     initialGuess: PlayerModel;
 }
 
@@ -27,6 +29,7 @@ export function GameBoard(props: GameBoardProps): ReactElement {
     const { initialGuess } = props;
 
     const { isOpen, onOpen, onClose } = useDisclosure();
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [answer, setAnswer] = useState<PlayerModel>({
 		DisplayName: "",
 		Jersey: "",
@@ -54,15 +57,15 @@ export function GameBoard(props: GameBoardProps): ReactElement {
 	});
     const [guesses, setGuesses] = useState<PlayerModel[]>([initialGuess]);
 
-    const onSubmit = (guess: PlayerModel) => {
+    const onSubmit = (guess: PlayerModel): void => {
         console.log(guess.DisplayName);
         setGuesses((prev) => [...prev, guess]);
     };
 
     return (
-        <Container maxW={"7xl"}>
+        <Container maxW="7xl">
             <Stack
-                align={"center"}
+                align="center"
                 spacing={{ base: 8, md: 10 }}
                 py={{ base: 20, md: 28 }}
                 direction={{ base: "column", md: "row" }}
@@ -71,7 +74,7 @@ export function GameBoard(props: GameBoardProps): ReactElement {
 				<Button maxW="sm" onClick={onOpen}>
                     View Silhouette
                 </Button>
-                    <Modal onClose={onClose} isOpen={isOpen} isCentered>
+                    <Modal onClose={onClose} isOpen={isOpen} isCentered={true}>
                         <ModalOverlay />
                         <ModalContent>
                             <ModalHeader>Who is it?</ModalHeader>
@@ -88,7 +91,7 @@ export function GameBoard(props: GameBoardProps): ReactElement {
                         <SearchBar submitAction={onSubmit} />
                     </Center>
                     {guesses.map((g, i) => (
-                        <ColorfulBackdrop index={i}>
+                        <ColorfulBackdrop key={g.DisplayName} index={i}>
                             <GuessCard guess={g} answer={answer}/>
                         </ColorfulBackdrop>
                     ))}

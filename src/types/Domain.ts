@@ -1,4 +1,4 @@
-export interface PlayerModel {
+export type PlayerModel = {
 	DisplayName: string;
 	Headshot?: string;
 	Jersey: string;
@@ -10,7 +10,7 @@ export interface PlayerModel {
 	Position: PositionModel;
 }
 
-export interface TeamModel {
+export type TeamModel = {
 	DisplayName: string;
 	ShortDisplayName: string;
 	Abbreviation: string;
@@ -18,14 +18,14 @@ export interface TeamModel {
 	Group: GroupModel;
 }
 
-export interface PositionModel {
+export type PositionModel = {
 	Name: string;
 	DisplayName: string;
 	Abbreviation: string;
-	Parent?: PositionModel
+	Parent?: PositionModel;
 }
 
-export interface GroupModel {
+export type GroupModel = {
 	IsConference: boolean;
 	Name: string;
 	Abbreviation: string;

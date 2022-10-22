@@ -11,12 +11,7 @@
 */
 
 const baseRestrictedImports = {
-    patterns: [
-        {
-            group: ["../*"],
-            message: "Usage of relative parent imports is not allowed.",
-        },
-    ],
+    patterns: [],
     paths: [
         {
             name: ".",
@@ -197,7 +192,6 @@ module.exports = {
                 "react/jsx-no-script-url": "error",
                 "react/jsx-no-useless-fragment": ["warn", { allowExpressions: true }],
                 "react/jsx-pascal-case": "warn",
-                "react/jsx-props-no-spreading": "warn",
                 "no-restricted-imports": [
                     "warn",
                     {
@@ -344,7 +338,6 @@ module.exports = {
         ],
         "no-else-return": "warn",
         "func-names": ["warn", "never"],
-        "func-style": ["warn", "declaration"],
         "one-var": ["warn", "never"],
         "operator-assignment": "warn",
         "prefer-arrow-callback": "warn",

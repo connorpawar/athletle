@@ -1,4 +1,4 @@
-export interface Player {
+export type Player = {
 	Id: string;
 	FirstName: string;
 	LastName: string;
@@ -17,7 +17,7 @@ export interface Player {
 	PositionId: string;
 }
 
-export interface Position {
+export type Position = {
 	Id: string;
 	Name: string;
 	DisplayName: string;
@@ -27,7 +27,7 @@ export interface Position {
 	LeagueId: string;
 }
 
-export interface Group {
+export type Group = {
 	Id: string;
 	Name: string;
 	Abbreviation: string;
@@ -37,7 +37,7 @@ export interface Group {
 	LeagueId: string;
 }
 
-export interface Team {
+export type Team = {
 	Id: string;
 	DisplayName: string;
 	ShortDisplayName: string;
@@ -47,7 +47,7 @@ export interface Team {
 	GroupId: string;
 }
 
-export interface League {
+export type League = {
 	Id: string;
 	Name: string;
 	Abbreviation: string;
@@ -55,18 +55,18 @@ export interface League {
 	LogoLink: string;
 }
 
-export interface Status {
+export type Status = {
 	Id: string;
 	Name: string;
 }
 
-export interface EspnStatus {
+export type EspnStatus = {
 	Id: string;
 	EspnId: number;
 	StatusId: string;
 }
 
-export interface EspnTeam {
+export type EspnTeam = {
 	Id: string;
 	EspnId: number;
 	EspnUid: string;
@@ -75,7 +75,7 @@ export interface EspnTeam {
 	EspnGroupId: string;
 }
 
-export interface EspnPlayer {
+export type EspnPlayer = {
 	Id: string;
 	EspnId: number;
 	EspnUid: string;
@@ -86,13 +86,13 @@ export interface EspnPlayer {
 	EspnPositionId: string;
 }
 
-export interface EspnPosition {
+export type EspnPosition = {
 	Id: string;
 	EspnId: number;
 	PositionId: string;
 }
 
-export interface EspnGroup {
+export type EspnGroup = {
 	Id: string;
 	EspnId: number;
 	EspnUid: string;
@@ -101,7 +101,7 @@ export interface EspnGroup {
 	ParentEspnGroupId: string;
 }
 
-export interface EspnLeague {
+export type EspnLeague = {
 	Id: string;
 	EspnId: number;
 	EspnUid: string;

@@ -7,6 +7,6 @@ export type SilhouetteProps = {
 
 export function Silhouette({ showOriginal = false, ...props }: SilhouetteProps): JSX.Element {
     const style = showOriginal ? {} : { filter: "brightness(0%)" };
-    // eslint-disable-next-line react/jsx-props-no-spreading
+     
     return <Image style={style} {...props} />;
 }
