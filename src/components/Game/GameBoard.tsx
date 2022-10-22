@@ -77,7 +77,7 @@ export function GameBoard(props: GameBoardProps): ReactElement {
                             <ModalHeader>Who is it?</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
-                                <PlayerCard image="https://a.espncdn.com/i/headshots/nfl/players/full/4262197.png" />
+                                <PlayerCard image="./silhouette.jpg" />
                             </ModalBody>
                             <ModalFooter>
                                 <Button onClick={onClose}>Close</Button>
