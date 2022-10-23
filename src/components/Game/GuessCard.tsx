@@ -10,7 +10,10 @@ import {
     FaHardHat,
     FaMapMarkerAlt,
 } from "react-icons/fa";
-import type { PlayerModel } from "~/types/Domain";
+import { useSportContext } from "~/contexts/SportContext";
+import { usePlayer } from "~/hooks/data/usePlayer";
+import type { Player, PlayerName } from "~/models";
+import type { Sport, SportsLeague } from "~/types/Enums";
 
 export type CardColor = "None" | "Yellow" | "Green";
 
@@ -19,21 +22,34 @@ type StatsCardProps = {
     stat: string;
     icon: ReactNode;
     color: CardColor;
-}
+};
 
 export type GuessCardProps = {
-    guess: PlayerModel;
-    answer: PlayerModel;
-}
+    guess: PlayerName;
+    answer: Player;
+};
 
 export function GuessCard({ guess }: GuessCardProps): ReactElement {
+    const { sportsLeague } = useSportContext();
+    
+    const { data, isLoading } = usePlayer(
+        sportsLeague.sport.toString(),
+        sportsLeague.league.toString(),
+        guess.teamName,
+        guess.name,
+        guess.position);
+
+    if (isLoading) {
+        return <div />;
+    }
+
     return (
         <Box mx="auto" px={{ base: 2, sm: 12, md: 17 }}>
             <SimpleGrid columns={9} spacing={{ base: 2, lg: 6 }}>
-                <StatsCard title="Name" stat={guess.DisplayName} icon={<div/>} color="None" />
+                <StatsCard title="Name" stat={data?.displayName ?? ""} icon={<div />} color="None" />
                 <StatsCard
                     title="Team"
-                    stat={guess.Team.ShortDisplayName}
+                    stat={data?.team.shortDisplayName ?? ""}
                     icon={<FaUserFriends size="1em" />}
                     color="None"
                 />
@@ -52,11 +68,7 @@ export function GuessCard({ guess }: GuessCardProps): ReactElement {
 function StatsCard(props: StatsCardProps): ReactElement {
     const { title, stat, icon, color } = props;
 
-	const bgColor = color === "None"
-		? undefined
-		: color === "Yellow"
-			? "yellow.400"
-			: "green.400";
+    const bgColor = color === "None" ? undefined : color === "Yellow" ? "yellow.400" : "green.400";
 
     return (
         <Stat
@@ -66,7 +78,7 @@ function StatsCard(props: StatsCardProps): ReactElement {
             border="1px solid"
             borderColor={useColorModeValue("gray.800", "gray.500")}
             rounded="lg"
-			backgroundColor={bgColor}
+            backgroundColor={bgColor}
         >
             <Flex justifyContent="space-between">
                 <Box pl={{ base: 1, md: 2 }}>
