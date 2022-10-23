@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useSportContext } from "~/contexts/SportContext";
 import { useAllPlayerNames } from "~/hooks/data/useAllPlayerNames";
 import type { PlayerName } from "~/models/PlayerName";
+import { ErrorToast } from "../Misc/ErrorToast";
 
 type SearchBarProps = {
     submitAction: (player: PlayerName) => void;
@@ -61,6 +62,7 @@ export function SearchBar(props: SearchBarProps): ReactElement {
     return (
         <Container maxW="xl">
             <Stack align="center" spacing={4} direction="row" w="lg">
+                <ErrorToast errorMsg={error} />
                 <CUIAutoComplete
                     label=""
                     hideToggleButton={true}

@@ -14,6 +14,7 @@ import { useSportContext } from "~/contexts/SportContext";
 import { usePlayer } from "~/hooks/data/usePlayer";
 import type { Player, PlayerName } from "~/models";
 import type { Sport, SportsLeague } from "~/types/Enums";
+import { ErrorToast } from "../Misc/ErrorToast";
 
 export type CardColor = "None" | "Yellow" | "Green";
 
@@ -32,7 +33,7 @@ export type GuessCardProps = {
 export function GuessCard({ guess }: GuessCardProps): ReactElement {
     const { sportsLeague } = useSportContext();
     
-    const { data, isLoading } = usePlayer(
+    const { data, isLoading, error } = usePlayer(
         sportsLeague.sport.toString(),
         sportsLeague.league.toString(),
         guess.teamName,
@@ -44,6 +45,8 @@ export function GuessCard({ guess }: GuessCardProps): ReactElement {
     }
 
     return (
+        <>
+        <ErrorToast errorMsg={error} />
         <Box mx="auto" px={{ base: 2, sm: 12, md: 17 }}>
             <SimpleGrid columns={9} spacing={{ base: 2, lg: 6 }}>
                 <StatsCard title="Name" stat={data?.displayName ?? ""} icon={<div />} color="None" />
@@ -62,6 +65,7 @@ export function GuessCard({ guess }: GuessCardProps): ReactElement {
                 <StatsCard title="Debuted" stat="7" icon={<FaCalendar size="1em" />} color="None" />
             </SimpleGrid>
         </Box>
+        </>
     );
 }
 

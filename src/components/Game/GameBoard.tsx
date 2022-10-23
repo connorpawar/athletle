@@ -21,14 +21,9 @@ import { PlayerCard } from "./PlayerCard";
 import { useSportContext } from "~/contexts/SportContext";
 import { usePlayerSelection } from "~/hooks/data/usePlayerSelection";
 import type { PlayerName, Player } from "~/models";
+import { ErrorToast } from "../Misc/ErrorToast";
 
-type GameBoardProps = {
-    initialGuess: PlayerName;
-}
-
-export function GameBoard(props: GameBoardProps): ReactElement {
-    const { initialGuess } = props;
-
+export function GameBoard(): ReactElement {
     const { isOpen, onOpen, onClose } = useDisclosure();
 	const [answer, setAnswer] = useState<Player>({
 		displayName: "",
@@ -58,7 +53,7 @@ export function GameBoard(props: GameBoardProps): ReactElement {
             parentId: null
 		}
 	});
-    const [guesses, setGuesses] = useState<PlayerName[]>([initialGuess]);
+    const [guesses, setGuesses] = useState<PlayerName[]>([]);
 
     const { sportsLeague } = useSportContext();
 
@@ -84,6 +79,7 @@ export function GameBoard(props: GameBoardProps): ReactElement {
                 direction={{ base: "column", md: "row" }}
             >
                 <Stack flex={1} spacing={{ base: 5, md: 10 }}>
+                <ErrorToast errorMsg={error}/>
 				<Button maxW="sm" onClick={onOpen}>
                     View Silhouette
                 </Button>
