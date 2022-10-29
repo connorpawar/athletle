@@ -45,14 +45,10 @@ export function SearchBar(props: SearchBarProps): ReactElement {
 
     useEffect(() => {
 		const selection = getSelection(selectedItems);
-		if (selection.length > 0)
-			{submitAction(JSON.parse(selection[0].value) as PlayerName);}
+		if (selection.length > 0){
+            submitAction(JSON.parse(selection[0].value) as PlayerName);
+        }
 	}, [selectedItems, submitAction]);
-
-    const handleCreateItem = (item: Item): void => {
-        setPickerItems((curr) => [...curr, item]);
-        setSelectedItems((curr) => [...curr, item]);
-    };
 
     const handleSelectedItemsChange = (selected?: Item[]): void => {
         if (selected !== undefined)
@@ -67,7 +63,6 @@ export function SearchBar(props: SearchBarProps): ReactElement {
                     label=""
                     hideToggleButton={true}
                     placeholder="Guess an Athlete!"
-                    onCreateItem={handleCreateItem}
                     items={pickerItems}
                     selectedItems={getSelection(selectedItems)}
                     onSelectedItemsChange={(changes): void => { handleSelectedItemsChange(changes.selectedItems); }}

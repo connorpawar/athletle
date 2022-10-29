@@ -2,6 +2,7 @@ import {
     Button,
     Center,
     Container,
+    Heading,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -12,52 +13,55 @@ import {
     Stack,
     useDisclosure,
 } from "@chakra-ui/react";
-import type { ReactElement} from "react";
+import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
 import { SearchBar } from "../App/SearchBar";
 import { ColorfulBackdrop } from "../Misc/ColorfulBackdrop";
+import { ErrorToast } from "../Misc/ErrorToast";
 import { GuessCard } from "./GuessCard";
 import { PlayerCard } from "./PlayerCard";
 import { useSportContext } from "~/contexts/SportContext";
 import { usePlayerSelection } from "~/hooks/data/usePlayerSelection";
 import type { PlayerName, Player } from "~/models";
-import { ErrorToast } from "../Misc/ErrorToast";
 
 export function GameBoard(): ReactElement {
     const { isOpen, onOpen, onClose } = useDisclosure();
-	const [answer, setAnswer] = useState<Player>({
-		displayName: "",
+    const [answer, setAnswer] = useState<Player>({
+        displayName: "",
         headshot: "",
-		jersey: "",
-		height: 0,
-		weight: 0,
-		dateOfBirth: new Date(),
-		debutYear: 0,
-		team: {
-			displayName: "",
-			shortDisplayName: "",
-			logo: "",
-			abbreviation: "",
-			group: {
-				isConference: true,
-				name: "",
-				logo: "",
-				abbreviation: "",
-                parent: null
-			}
-		},
-		position: {
-			name: "",
-			displayName: "",
-			abbreviation: "",
-            parentId: null
-		}
-	});
+        jersey: "",
+        height: 0,
+        weight: 0,
+        dateOfBirth: new Date(),
+        debutYear: 0,
+        team: {
+            displayName: "",
+            shortDisplayName: "",
+            logo: "",
+            abbreviation: "",
+            group: {
+                isConference: true,
+                name: "",
+                logo: "",
+                abbreviation: "",
+                parent: null,
+            },
+        },
+        position: {
+            name: "",
+            displayName: "",
+            abbreviation: "",
+            parentId: null,
+        },
+    });
     const [guesses, setGuesses] = useState<PlayerName[]>([]);
 
     const { sportsLeague } = useSportContext();
 
-    const { data, isLoading, error} = usePlayerSelection(sportsLeague.sport.toString(), sportsLeague.league.toString());
+    const { data, isLoading, error } = usePlayerSelection(
+        sportsLeague.sport.toString(),
+        sportsLeague.league.toString()
+    );
 
     useEffect(() => {
         if (data !== undefined) {
@@ -79,10 +83,10 @@ export function GameBoard(): ReactElement {
                 direction={{ base: "column", md: "row" }}
             >
                 <Stack flex={1} spacing={{ base: 5, md: 10 }}>
-                <ErrorToast errorMsg={error}/>
-				<Button maxW="sm" onClick={onOpen}>
-                    View Silhouette
-                </Button>
+                    <ErrorToast errorMsg={error} />
+                    <Button maxW="sm" onClick={onOpen}>
+                        View Silhouette
+                    </Button>
                     <Modal onClose={onClose} isOpen={isOpen} isCentered={true}>
                         <ModalOverlay />
                         <ModalContent>
@@ -97,6 +101,9 @@ export function GameBoard(): ReactElement {
                         </ModalContent>
                     </Modal>
                     <Center mb="12em">
+                        <Heading color="red.400">{sportsLeague.league}</Heading>
+                    </Center>
+                    <Center mb="12em" zIndex={1000}>
                         <SearchBar submitAction={onSubmit} />
                     </Center>
                     {guesses.map((g, i) => (

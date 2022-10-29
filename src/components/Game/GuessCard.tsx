@@ -10,11 +10,10 @@ import {
     FaHardHat,
     FaMapMarkerAlt,
 } from "react-icons/fa";
+import { ErrorToast } from "../Misc/ErrorToast";
 import { useSportContext } from "~/contexts/SportContext";
 import { usePlayer } from "~/hooks/data/usePlayer";
 import type { Player, PlayerName } from "~/models";
-import type { Sport, SportsLeague } from "~/types/Enums";
-import { ErrorToast } from "../Misc/ErrorToast";
 
 export type CardColor = "None" | "Yellow" | "Green";
 

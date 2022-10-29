@@ -1,3 +1,4 @@
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import type { IconProps } from "@chakra-ui/react";
 import {
     Container,
@@ -10,18 +11,26 @@ import {
     Image,
     Icon,
     useColorModeValue,
-	useBreakpointValue,
+    useBreakpointValue,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
+    SkeletonCircle,
 } from "@chakra-ui/react";
 import type { ReactElement } from "react";
+import { ErrorToast } from "../Misc/ErrorToast";
+import { useSportContext } from "~/contexts/SportContext";
+import { useAllLeagues } from "~/hooks/data/useAllLeagues";
 
 export type CallToActionProps = {
-	onButtonClick: VoidFunction;
-}
+    onButtonClick: VoidFunction;
+};
 
-export function CallToAction({
-	onButtonClick
-}: CallToActionProps): ReactElement {
-	const displayImage = useBreakpointValue({ base: true, md: false })
+export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement {
+    const displayImage = useBreakpointValue({ base: true, md: false });
+    const { data: leagues, isLoading, error } = useAllLeagues();
+    const { setSportsLeague } = useSportContext();
     return (
         <Container maxW="7xl">
             <Stack
@@ -66,13 +75,42 @@ export function CallToAction({
                             colorScheme="red"
                             bg="red.400"
                             _hover={{ bg: "red.500" }}
-							onClick={onButtonClick}
+                            onClick={onButtonClick}
                         >
                             Statistics
                         </Button>
-                        <Button rounded="full" size="lg" fontWeight="normal" px={6}>
-                            How It Works
-                        </Button>
+                        <SkeletonCircle isLoaded={!isLoading}>
+                            <Menu>
+                                {({ isOpen }): ReactElement => (
+                                    <>
+                                        <MenuButton
+                                            rounded="full"
+                                            size="lg"
+                                            fontWeight="normal"
+                                            px={6}
+                                            isActive={isOpen}
+                                            as={Button}
+                                            rightIcon={<ChevronDownIcon />}
+                                        >
+                                            {isOpen ? "Close" : "Choose A League"}
+                                        </MenuButton>
+                                        <MenuList>
+                                            {leagues?.map((lg) => (
+                                                <MenuItem
+                                                    key={lg.name}
+                                                    onClick={(): void => {
+                                                        setSportsLeague({ sport: lg.sport, league: lg.name });
+                                                        onButtonClick();
+                                                    }}
+                                                >
+                                                    {lg.name}
+                                                </MenuItem>
+                                            ))}
+                                        </MenuList>
+                                    </>
+                                )}
+                            </Menu>
+                        </SkeletonCircle>
                     </Stack>
                 </Stack>
                 <Flex
@@ -100,17 +138,11 @@ export function CallToAction({
                         width="full"
                         overflow="hidden"
                     >
-                        <Image
-                            alt="Hero Image"
-                            fit="cover"
-                            align="center"
-                            w="100%"
-                            h="100%"
-                            src="./silhouette.jpg"
-                        />
+                        <Image alt="Hero Image" fit="cover" align="center" w="100%" h="100%" src="./silhouette.jpg" />
                     </Box>
                 </Flex>
             </Stack>
+            <ErrorToast errorMsg={error} />
         </Container>
     );
 }
