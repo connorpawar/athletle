@@ -13,52 +13,60 @@ import {
     useDisclosure,
 } from "@chakra-ui/react";
 import type { ReactElement} from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SearchBar } from "../App/SearchBar";
 import { ColorfulBackdrop } from "../Misc/ColorfulBackdrop";
 import { GuessCard } from "./GuessCard";
 import { PlayerCard } from "./PlayerCard";
-// import { TeamModel } from "~/types/Domain";
-import type { PlayerModel} from "~/types/Domain";
+import { useSportContext } from "~/contexts/SportContext";
+import { usePlayerSelection } from "~/hooks/data/usePlayerSelection";
+import type { PlayerName, Player } from "~/models";
+import { ErrorToast } from "../Misc/ErrorToast";
 
-type GameBoardProps = {
-    initialGuess: PlayerModel;
-}
-
-export function GameBoard(props: GameBoardProps): ReactElement {
-    const { initialGuess } = props;
-
+export function GameBoard(): ReactElement {
     const { isOpen, onOpen, onClose } = useDisclosure();
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [answer, setAnswer] = useState<PlayerModel>({
-		DisplayName: "",
-		Jersey: "",
-		Height: 0,
-		Weight: 0,
-		DateOfBirth: new Date(),
-		DebutYear: 0,
-		Team: {
-			DisplayName: "",
-			ShortDisplayName: "",
-			Logo: "",
-			Abbreviation: "",
-			Group: {
-				IsConference: true,
-				Name: "",
-				Logo: "",
-				Abbreviation: ""
+	const [answer, setAnswer] = useState<Player>({
+		displayName: "",
+        headshot: "",
+		jersey: "",
+		height: 0,
+		weight: 0,
+		dateOfBirth: new Date(),
+		debutYear: 0,
+		team: {
+			displayName: "",
+			shortDisplayName: "",
+			logo: "",
+			abbreviation: "",
+			group: {
+				isConference: true,
+				name: "",
+				logo: "",
+				abbreviation: "",
+                parent: null
 			}
 		},
-		Position: {
-			Name: "",
-			DisplayName: "",
-			Abbreviation: ""
+		position: {
+			name: "",
+			displayName: "",
+			abbreviation: "",
+            parentId: null
 		}
 	});
-    const [guesses, setGuesses] = useState<PlayerModel[]>([initialGuess]);
+    const [guesses, setGuesses] = useState<PlayerName[]>([]);
 
-    const onSubmit = (guess: PlayerModel): void => {
-        console.log(guess.DisplayName);
+    const { sportsLeague } = useSportContext();
+
+    const { data, isLoading, error} = usePlayerSelection(sportsLeague.sport.toString(), sportsLeague.league.toString());
+
+    useEffect(() => {
+        if (data !== undefined) {
+            setAnswer(data);
+        }
+    }, [data]);
+
+    const onSubmit = (guess: PlayerName): void => {
+        console.log(`You've guessed ${guess.name}!`);
         setGuesses((prev) => [...prev, guess]);
     };
 
@@ -71,6 +79,7 @@ export function GameBoard(props: GameBoardProps): ReactElement {
                 direction={{ base: "column", md: "row" }}
             >
                 <Stack flex={1} spacing={{ base: 5, md: 10 }}>
+                <ErrorToast errorMsg={error}/>
 				<Button maxW="sm" onClick={onOpen}>
                     View Silhouette
                 </Button>
@@ -91,8 +100,8 @@ export function GameBoard(props: GameBoardProps): ReactElement {
                         <SearchBar submitAction={onSubmit} />
                     </Center>
                     {guesses.map((g, i) => (
-                        <ColorfulBackdrop key={g.DisplayName} index={i}>
-                            <GuessCard guess={g} answer={answer}/>
+                        <ColorfulBackdrop key={g.name} index={i}>
+                            <GuessCard guess={g} answer={answer} />
                         </ColorfulBackdrop>
                     ))}
                 </Stack>

@@ -2,33 +2,31 @@ import { ChakraProvider, SlideFade } from "@chakra-ui/react";
 import { useState } from "react";
 import type { ReactElement } from "react";
 import { CallToAction } from "~/components/App/CallToAction";
-import { SearchBar } from "~/components/App/SearchBar";
 import { GameBoard } from "~/components/Game/GameBoard";
 import theme from "~/config/theme";
-import type { PlayerModel } from "~/types/Domain";
+import type { SportsLeagueContext} from "~/contexts/SportContext";
+import { SportContext } from "~/contexts/SportContext";
 
 export function App(): ReactElement {
     const [isGameBoardOpen, setIsGameBoardOpen] = useState(false);
-    const [initialGuess, setInitialGuess] = useState<PlayerModel | null>(null);
-    const openGameBoard = setIsGameBoardOpen.bind(null, true);
+    const [sportsLeague, setSportsLeague] = useState<SportsLeagueContext>({
+        sport: "football",
+        league: "National Football League"
+    })
 
-    function submitInitialGuess(guess: PlayerModel): void {
-        setInitialGuess(guess);
-        openGameBoard();
-    }
+    const openGameBoard = setIsGameBoardOpen.bind(null, true);
 
     return (
         <ChakraProvider theme={theme}>
+            <SportContext.Provider value= {{ sportsLeague, setSportsLeague }}>
             {isGameBoardOpen ? (
                 <SlideFade in={true} offsetY="20px">
-                    <GameBoard initialGuess={initialGuess!} />
+                    <GameBoard />
                 </SlideFade>
             ) : (
-                <>
-                    <CallToAction onButtonClick={openGameBoard} />
-                    <SearchBar submitAction={submitInitialGuess} />
-                </>
+                <CallToAction onButtonClick={openGameBoard} />
             )}
+            </SportContext.Provider>
         </ChakraProvider>
     );
 }

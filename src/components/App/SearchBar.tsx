@@ -1,17 +1,14 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-/* Todo : eslint rules after we're done using fake data */
-
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
 import { Container, Stack } from "@chakra-ui/react";
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
 import type { ReactElement} from "react";
 import { useEffect, useState } from "react";
-import type { PlayerModel, TeamModel } from "~/types/Domain";
-// import { useFetchQuery } from "~/hooks/useFetchQuery";
+import { useSportContext } from "~/contexts/SportContext";
+import { useAllPlayerNames } from "~/hooks/data/useAllPlayerNames";
+import type { PlayerName } from "~/models/PlayerName";
+import { ErrorToast } from "../Misc/ErrorToast";
 
 type SearchBarProps = {
-    submitAction: (player: PlayerModel) => void;
+    submitAction: (player: PlayerName) => void;
 }
 
 export type Item = {
@@ -19,10 +16,10 @@ export type Item = {
     value: string;
 }
 
-const extractPlayerToItem = (player: PlayerModel): Item => {
+const extractPlayerToItem = (player: PlayerName): Item => {
     const selectItem: Item = {
         value: JSON.stringify(player),
-        label: player.DisplayName,
+        label: player.name,
     };
 
     return selectItem;
@@ -34,39 +31,22 @@ const getSelection = (selectedItems: Item[]): Item[] =>
 export function SearchBar(props: SearchBarProps): ReactElement {
     const { submitAction } = props;
 
-    // const { data, status, error } = useFetchQuery<PlayerModel[]>(
-    //     "https://athletle-api-beta.azurewebsites.net/player/names?sport=football&leagueName=National%20Football%20League"
-    // );
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const data: PlayerModel[] = [
-        {
-            DisplayName: "Lebron James",
-            Team: {
-                DisplayName: "Los Angeles Lakers",
-                ShortDisplayName: "Lakers",
-            } as TeamModel,
-        } as PlayerModel,
-        {
-            DisplayName: "Lebron James #2",
-            Team: {
-                DisplayName: "Los Angeles Lakers",
-                ShortDisplayName: "Lakers",
-            } as TeamModel,
-        } as PlayerModel,
-    ];
-
     const [pickerItems, setPickerItems] = useState<Item[]>([]);
     const [selectedItems, setSelectedItems] = useState<Item[]>([]);
 
+    const { sportsLeague } = useSportContext();
+
+    const { data, error } = useAllPlayerNames(sportsLeague.sport.toString(), sportsLeague.league.toString());
+
     useEffect(() => {
-        if (data)
+        if (data !== undefined)
             {setPickerItems(data.map(extractPlayerToItem));}
-    }, [data]);
+    }, [data, error]);
 
     useEffect(() => {
 		const selection = getSelection(selectedItems);
 		if (selection.length > 0)
-			{submitAction(JSON.parse(selection[0].value) as PlayerModel);}
+			{submitAction(JSON.parse(selection[0].value) as PlayerName);}
 	}, [selectedItems, submitAction]);
 
     const handleCreateItem = (item: Item): void => {
@@ -82,6 +62,7 @@ export function SearchBar(props: SearchBarProps): ReactElement {
     return (
         <Container maxW="xl">
             <Stack align="center" spacing={4} direction="row" w="lg">
+                <ErrorToast errorMsg={error} />
                 <CUIAutoComplete
                     label=""
                     hideToggleButton={true}
