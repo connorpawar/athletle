@@ -3,9 +3,8 @@ import type { ReactElement } from "react";
 import { usePlayerSelection } from "~/hooks/data/usePlayerSelection";
 
 export function PlayerSelection(): ReactElement {
-    const sport = "football";
-    const league = "National Football League";
-    const { isLoading, data: player, error } = usePlayerSelection(sport, league);
+    const leagueId = "c0eb9eb3-2299-4e12-4638-08da80bc9c56";
+    const { isLoading, data: player, error } = usePlayerSelection(leagueId);
 
     console.log(player);
     return isLoading || error !== undefined ? (

@@ -3,12 +3,8 @@ import type { ReactElement } from "react";
 import { usePlayer } from "~/hooks/data/usePlayer";
 
 export function Player(): ReactElement {
-    const sport = "football";
-    const league = "National Football League";
-    const team = "Buffalo Bills";
-    const name = "Josh Allen";
-    const position = "QB";
-    const { isLoading, data: player, error } = usePlayer(sport, league, team, name, position);
+    const playerId = "f81f7df0-3fba-4ab6-e3ee-08da80bca449";
+    const { isLoading, data: player, error } = usePlayer(playerId);
 
     return isLoading || error !== undefined ? (
         isLoading ? (

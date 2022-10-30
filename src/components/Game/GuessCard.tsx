@@ -31,13 +31,8 @@ export type GuessCardProps = {
 
 export function GuessCard({ guess }: GuessCardProps): ReactElement {
     const { sportsLeague } = useSportContext();
-    
-    const { data, isLoading, error } = usePlayer(
-        sportsLeague.sport.toString(),
-        sportsLeague.league.toString(),
-        guess.teamName,
-        guess.name,
-        guess.position);
+
+    const { data, isLoading, error } = usePlayer(guess.id);
 
     if (isLoading) {
         return <div />;
@@ -45,25 +40,25 @@ export function GuessCard({ guess }: GuessCardProps): ReactElement {
 
     return (
         <>
-        <ErrorToast errorMsg={error} />
-        <Box mx="auto" px={{ base: 2, sm: 12, md: 17 }}>
-            <SimpleGrid columns={9} spacing={{ base: 2, lg: 6 }}>
-                <StatsCard title="Name" stat={data?.displayName ?? ""} icon={<div />} color="None" />
-                <StatsCard
-                    title="Team"
-                    stat={data?.team.shortDisplayName ?? ""}
-                    icon={<FaUserFriends size="1em" />}
-                    color="None"
-                />
-                <StatsCard title="Conf." stat="7" icon={<FaMapMarkerAlt size="1em" />} color="None" />
-                <StatsCard title="Jersey" stat="7" icon={<FaTshirt size="1em" />} color="Yellow" />
-                <StatsCard title="Pos." stat="7" icon={<FaHardHat size="1em" />} color="None" />
-                <StatsCard title="Height" stat="7" icon={<FaTape size="1em" />} color="Green" />
-                <StatsCard title="Weight" stat="7" icon={<FaBalanceScale size="1em" />} color="None" />
-                <StatsCard title="Age" stat="7" icon={<FaAddressBook size="1em" />} color="None" />
-                <StatsCard title="Debuted" stat="7" icon={<FaCalendar size="1em" />} color="None" />
-            </SimpleGrid>
-        </Box>
+            <ErrorToast errorMsg={error} />
+            <Box mx="auto" px={{ base: 2, sm: 12, md: 17 }}>
+                <SimpleGrid columns={9} spacing={{ base: 2, lg: 6 }}>
+                    <StatsCard title="Name" stat={data?.displayName ?? ""} icon={<div />} color="None" />
+                    <StatsCard
+                        title="Team"
+                        stat={data?.team.shortDisplayName ?? ""}
+                        icon={<FaUserFriends size="1em" />}
+                        color="None"
+                    />
+                    <StatsCard title="Conf." stat="7" icon={<FaMapMarkerAlt size="1em" />} color="None" />
+                    <StatsCard title="Jersey" stat="7" icon={<FaTshirt size="1em" />} color="Yellow" />
+                    <StatsCard title="Pos." stat="7" icon={<FaHardHat size="1em" />} color="None" />
+                    <StatsCard title="Height" stat="7" icon={<FaTape size="1em" />} color="Green" />
+                    <StatsCard title="Weight" stat="7" icon={<FaBalanceScale size="1em" />} color="None" />
+                    <StatsCard title="Age" stat="7" icon={<FaAddressBook size="1em" />} color="None" />
+                    <StatsCard title="Debuted" stat="7" icon={<FaCalendar size="1em" />} color="None" />
+                </SimpleGrid>
+            </Box>
         </>
     );
 }

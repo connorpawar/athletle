@@ -1,6 +1,6 @@
 import { Container, Stack } from "@chakra-ui/react";
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
-import type { ReactElement} from "react";
+import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
 import { useSportContext } from "~/contexts/SportContext";
 import { useAllPlayerNames } from "~/hooks/data/useAllPlayerNames";
@@ -9,12 +9,12 @@ import { ErrorToast } from "../Misc/ErrorToast";
 
 type SearchBarProps = {
     submitAction: (player: PlayerName) => void;
-}
+};
 
 export type Item = {
     label: string;
     value: string;
-}
+};
 
 const extractPlayerToItem = (player: PlayerName): Item => {
     const selectItem: Item = {
@@ -26,7 +26,7 @@ const extractPlayerToItem = (player: PlayerName): Item => {
 };
 
 const getSelection = (selectedItems: Item[]): Item[] =>
-	selectedItems.length > 0 ? selectedItems.slice(selectedItems.length - 1) : [];
+    selectedItems.length > 0 ? selectedItems.slice(selectedItems.length - 1) : [];
 
 export function SearchBar(props: SearchBarProps): ReactElement {
     const { submitAction } = props;
@@ -36,23 +36,25 @@ export function SearchBar(props: SearchBarProps): ReactElement {
 
     const { sportsLeague } = useSportContext();
 
-    const { data, error } = useAllPlayerNames(sportsLeague.sport.toString(), sportsLeague.league.toString());
+    const { data, error } = useAllPlayerNames(sportsLeague.id);
 
     useEffect(() => {
-        if (data !== undefined)
-            {setPickerItems(data.map(extractPlayerToItem));}
+        if (data !== undefined) {
+            setPickerItems(data.map(extractPlayerToItem));
+        }
     }, [data, error]);
 
     useEffect(() => {
-		const selection = getSelection(selectedItems);
-		if (selection.length > 0){
+        const selection = getSelection(selectedItems);
+        if (selection.length > 0) {
             submitAction(JSON.parse(selection[0].value) as PlayerName);
         }
-	}, [selectedItems, submitAction]);
+    }, [selectedItems, submitAction]);
 
     const handleSelectedItemsChange = (selected?: Item[]): void => {
-        if (selected !== undefined)
-            {setSelectedItems(selected);}
+        if (selected !== undefined) {
+            setSelectedItems(selected);
+        }
     };
 
     return (
@@ -65,11 +67,13 @@ export function SearchBar(props: SearchBarProps): ReactElement {
                     placeholder="Guess an Athlete!"
                     items={pickerItems}
                     selectedItems={getSelection(selectedItems)}
-                    onSelectedItemsChange={(changes): void => { handleSelectedItemsChange(changes.selectedItems); }}
+                    onSelectedItemsChange={(changes): void => {
+                        handleSelectedItemsChange(changes.selectedItems);
+                    }}
                     inputStyleProps={{ width: "30em" }}
                     disableCreateItem={true}
-					tagStyleProps={{display: "none"}}
-					highlightItemBg="red.400"
+                    tagStyleProps={{ display: "none" }}
+                    highlightItemBg="red.400"
                 />
             </Stack>
         </Container>

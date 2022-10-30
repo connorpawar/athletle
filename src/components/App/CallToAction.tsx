@@ -99,7 +99,11 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                                                 <MenuItem
                                                     key={lg.name}
                                                     onClick={(): void => {
-                                                        setSportsLeague({ sport: lg.sport, league: lg.name });
+                                                        setSportsLeague({
+                                                            id: lg.id,
+                                                            sport: lg.sport,
+                                                            league: lg.name,
+                                                        });
                                                         onButtonClick();
                                                     }}
                                                 >

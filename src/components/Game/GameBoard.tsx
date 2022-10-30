@@ -58,10 +58,7 @@ export function GameBoard(): ReactElement {
 
     const { sportsLeague } = useSportContext();
 
-    const { data, isLoading, error } = usePlayerSelection(
-        sportsLeague.sport.toString(),
-        sportsLeague.league.toString()
-    );
+    const { data, isLoading, error } = usePlayerSelection(sportsLeague.id);
 
     useEffect(() => {
         if (data !== undefined) {
