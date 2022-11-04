@@ -1,4 +1,5 @@
 import {
+    Box,
     Button,
     Center,
     Container,
@@ -12,6 +13,7 @@ import {
     ModalOverlay,
     Stack,
     useDisclosure,
+    VStack,
 } from "@chakra-ui/react";
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
@@ -100,14 +102,26 @@ export function GameBoard(): ReactElement {
                     <Center mb="12em">
                         <Heading color="red.400">{sportsLeague.league}</Heading>
                     </Center>
-                    <Center mb="12em" zIndex={1000}>
-                        <SearchBar submitAction={onSubmit} />
-                    </Center>
-                    {guesses.map((g, i) => (
-                        <ColorfulBackdrop key={g.name} index={i}>
-                            <GuessCard guess={g} answer={answer} />
-                        </ColorfulBackdrop>
-                    ))}
+                    <Box
+                        position="relative"
+                        display="block"
+                    >
+                        <Box
+                            position="absolute"
+                            zIndex="1"
+                        >
+                            <SearchBar submitAction={onSubmit} />
+                        </Box>
+                        <Box
+                            paddingTop="150px"
+                        >
+                        {guesses.map((g, i) => (
+                            <ColorfulBackdrop key={g.name} index={i}>
+                                <GuessCard guess={g} answer={answer} />
+                            </ColorfulBackdrop>
+                        ))}
+                        </Box>
+                    </Box>
                 </Stack>
             </Stack>
         </Container>

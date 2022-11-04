@@ -2,10 +2,11 @@ import { Container, Stack } from "@chakra-ui/react";
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
+import { ErrorToast } from "../Misc/ErrorToast";
 import { useSportContext } from "~/contexts/SportContext";
 import { useAllPlayerNames } from "~/hooks/data/useAllPlayerNames";
 import type { PlayerName } from "~/models/PlayerName";
-import { ErrorToast } from "../Misc/ErrorToast";
+import { levenshteinDistance } from "~/utils/levenshteinDistance";
 
 type SearchBarProps = {
     submitAction: (player: PlayerName) => void;
@@ -48,6 +49,7 @@ export function SearchBar(props: SearchBarProps): ReactElement {
         const selection = getSelection(selectedItems);
         if (selection.length > 0) {
             submitAction(JSON.parse(selection[0].value) as PlayerName);
+            setSelectedItems([]);
         }
     }, [selectedItems, submitAction]);
 
@@ -58,8 +60,8 @@ export function SearchBar(props: SearchBarProps): ReactElement {
     };
 
     return (
-        <Container maxW="xl">
-            <Stack align="center" spacing={4} direction="row" w="lg">
+        <Container>
+            <Stack align="center" spacing={4} direction="row">
                 <ErrorToast errorMsg={error} />
                 <CUIAutoComplete
                     label=""
@@ -70,8 +72,12 @@ export function SearchBar(props: SearchBarProps): ReactElement {
                     onSelectedItemsChange={(changes): void => {
                         handleSelectedItemsChange(changes.selectedItems);
                     }}
-                    inputStyleProps={{ width: "30em" }}
+                    optionFilterFunc={(items, val): Item[] =>
+                        items.filter(
+                            (it) => levenshteinDistance(it.label.slice(0, val.length), val) < val.length / 2
+                    )}
                     disableCreateItem={true}
+                    inputStyleProps={{width: "xl"}}
                     tagStyleProps={{ display: "none" }}
                     highlightItemBg="red.400"
                 />

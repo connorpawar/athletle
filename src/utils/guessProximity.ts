@@ -17,8 +17,8 @@ export type GuessProximity = (
 	answer: Player
 ) => GuessProximityResponse;
 
-const calculateAge = (dob: Date): number => {
-	const ageDifMs = Date.now() - dob.getTime();
+export const calculateAge = (dob: Date): number => {
+	const ageDifMs = Date.now() - new Date(dob).getTime();
 	const ageDate = new Date(ageDifMs);
 	return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
@@ -37,14 +37,14 @@ export const guessProximity: GuessProximity = (guess, answer) => {
 	const answerJerseyNum = parseInt(answer.jersey, 10);
 
 	const guessAge = calculateAge(guess.dateOfBirth);
-	const answerAge = calculateAge(guess.dateOfBirth);
+	const answerAge = calculateAge(answer.dateOfBirth);
 
 	if (guess.team.displayName === answer.team.displayName)
 		{team = "Green";}
 
 	if (guessJerseyNum === answerJerseyNum)
 		{jersey = "Green";}
-	else if (Math.abs(guessJerseyNum - answerJerseyNum) < 3)
+	else if (Math.abs(guessJerseyNum - answerJerseyNum) < 5)
 		{age = "Yellow";}
 
 	if (guess.position.displayName === answer.position.displayName)
@@ -52,7 +52,7 @@ export const guessProximity: GuessProximity = (guess, answer) => {
 
 	if (guess.height === answer.height)
 		{height = "Green";}
-	else if (Math.abs(guess.height - answer.height) < 10)
+	else if (Math.abs(guess.height - answer.height) < 3)
 		{height = "Yellow";}
 
 	if (guess.weight === answer.weight)
