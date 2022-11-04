@@ -7,6 +7,7 @@ import { useSportContext } from "~/contexts/SportContext";
 import { useAllPlayerNames } from "~/hooks/data/useAllPlayerNames";
 import type { PlayerName } from "~/models/PlayerName";
 import { levenshteinDistance } from "~/utils/levenshteinDistance";
+import { useRef } from "react";
 
 type SearchBarProps = {
     submitAction: (player: PlayerName) => void;
@@ -50,6 +51,8 @@ export function SearchBar(props: SearchBarProps): ReactElement {
         if (selection.length > 0) {
             submitAction(JSON.parse(selection[0].value) as PlayerName);
             setSelectedItems([]);
+            
+            (document.activeElement as HTMLElement).blur()
         }
     }, [selectedItems, submitAction]);
 
@@ -72,12 +75,24 @@ export function SearchBar(props: SearchBarProps): ReactElement {
                     onSelectedItemsChange={(changes): void => {
                         handleSelectedItemsChange(changes.selectedItems);
                     }}
-                    optionFilterFunc={(items, val): Item[] =>
-                        items.filter(
-                            (it) => levenshteinDistance(it.label.slice(0, val.length), val) < val.length / 2
-                    )}
+                    optionFilterFunc={(items, val): Item[] => {
+                        const distances = new Map(
+                            items.map(
+                                (it) =>
+                                    [it.label, levenshteinDistance(it.label.slice(0, val.length), val)] as [
+                                        string,
+                                        number
+                                    ]
+                            )
+                        );
+                        const sorted = items.sort(
+                            (a, b) => (distances.get(a.label) ?? 0) - (distances.get(b.label) ?? 0)
+                        );
+
+                        return sorted.filter((it) => (distances.get(it.label) ?? 0) < val.length / 2);
+                    }}
                     disableCreateItem={true}
-                    inputStyleProps={{width: "xl"}}
+                    inputStyleProps={{ width: "xl" }}
                     tagStyleProps={{ display: "none" }}
                     highlightItemBg="red.400"
                 />
