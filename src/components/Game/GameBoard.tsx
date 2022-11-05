@@ -135,7 +135,6 @@ export function GameBoard(): ReactElement {
                     >
                         <Box
                             position="absolute"
-                            marginX="30%"
                             zIndex="1"
                         >
                             <SearchBar submitAction={onSubmit} />
