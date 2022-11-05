@@ -3,9 +3,8 @@ import type { ReactElement } from "react";
 import { useLeague } from "~/hooks/data/useLeague";
 
 export function League(): ReactElement {
-    const sport = "football";
-    const name = "National Football League";
-    const { isLoading, data: league, error } = useLeague(sport, name);
+    const leagueId = "c0eb9eb3-2299-4e12-4638-08da80bc9c56";
+    const { isLoading, data: league, error } = useLeague(leagueId);
 
     return isLoading || error !== undefined ? (
         isLoading ? (
@@ -15,7 +14,7 @@ export function League(): ReactElement {
         )
     ) : (
         <div>
-            {sport} - {name} Info:
+            League ({leagueId}) Info:
             <UnorderedList>
                 <ListItem>Name: {league?.name}</ListItem>
                 <ListItem>Abbreviation: {league?.abbreviation}</ListItem>

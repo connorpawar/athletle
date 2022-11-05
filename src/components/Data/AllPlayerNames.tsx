@@ -3,9 +3,8 @@ import type { ReactElement } from "react";
 import { useAllPlayerNames } from "~/hooks/data/useAllPlayerNames";
 
 export function AllPlayerNames(): ReactElement {
-    const sport = "football";
-    const name = "National Football League";
-    const { isLoading, data: playerNames, error } = useAllPlayerNames(sport, name);
+    const leagueId = "c0eb9eb3-2299-4e12-4638-08da80bc9c56";
+    const { isLoading, data: playerNames, error } = useAllPlayerNames(leagueId);
 
     const playerNamesView = playerNames?.slice(0, 5).map((playerName) => (
         <ListItem key={`${playerName.name}-${playerName.teamName}-${playerName.position}`}>

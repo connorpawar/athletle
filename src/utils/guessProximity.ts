@@ -1,5 +1,5 @@
 import type { CardColor } from "~/components/Game/GuessCard";
-import type { PlayerModel } from "~/types/Domain";
+import type { Player } from "~/models";
 
 export type GuessProximityResponse = {
 	team: CardColor;
@@ -13,12 +13,12 @@ export type GuessProximityResponse = {
 }
 
 export type GuessProximity = (
-	guess: PlayerModel,
-	answer: PlayerModel
+	guess: Player,
+	answer: Player
 ) => GuessProximityResponse;
 
-const calculateAge = (dob: Date): number => {
-	const ageDifMs = Date.now() - dob.getTime();
+export const calculateAge = (dob: Date): number => {
+	const ageDifMs = Date.now() - new Date(dob).getTime();
 	const ageDate = new Date(ageDifMs);
 	return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
@@ -33,31 +33,37 @@ export const guessProximity: GuessProximity = (guess, answer) => {
 	let age: CardColor = "None";
 	let debuted: CardColor = "None";
 
-	const guessJerseyNum = parseInt(guess.Jersey, 10);
-	const answerJerseyNum = parseInt(answer.Jersey, 10);
+	const guessJerseyNum = parseInt(guess.jersey, 10);
+	const answerJerseyNum = parseInt(answer.jersey, 10);
 
-	const guessAge = calculateAge(guess.DateOfBirth);
-	const answerAge = calculateAge(guess.DateOfBirth);
+	const guessAge = calculateAge(guess.dateOfBirth);
+	const answerAge = calculateAge(answer.dateOfBirth);
 
-	if (guess.Team.DisplayName === answer.Team.DisplayName)
+	if (guess.displayName === answer.displayName)
+		{team = "Green";}
+
+	if (guess.team.group.name === answer.team.group.name)
+		{team = "Green";}
+
+	if (guess.team.displayName === answer.team.displayName)
 		{team = "Green";}
 
 	if (guessJerseyNum === answerJerseyNum)
 		{jersey = "Green";}
-	else if (Math.abs(guessJerseyNum - answerJerseyNum) < 3)
+	else if (Math.abs(guessJerseyNum - answerJerseyNum) < 5)
 		{age = "Yellow";}
 
-	if (guess.Position.DisplayName === answer.Position.DisplayName)
+	if (guess.position.displayName === answer.position.displayName)
 		{position = "Green";}
 
-	if (guess.Height === answer.Height)
+	if (guess.height === answer.height)
 		{height = "Green";}
-	else if (Math.abs(guess.Height - answer.Height) < 10)
+	else if (Math.abs(guess.height - answer.height) < 3)
 		{height = "Yellow";}
 
-	if (guess.Weight === answer.Weight)
+	if (guess.weight === answer.weight)
 		{weight = "Green";}
-	else if (Math.abs(guess.Weight - answer.Weight) < 10)
+	else if (Math.abs(guess.weight - answer.weight) < 10)
 		{weight = "Yellow";}
 
 	if (guessAge === answerAge)
@@ -65,9 +71,9 @@ export const guessProximity: GuessProximity = (guess, answer) => {
 	else if (Math.abs(guessAge - answerAge) < 3)
 		{age = "Yellow";}
 
-	if (guess.DebutYear === answer.DebutYear)
+	if (guess.debutYear === answer.debutYear)
 		{debuted = "Green";}
-	else if (Math.abs(guess.DebutYear - answer.DebutYear) < 3)
+	else if (Math.abs(guess.debutYear - answer.debutYear) < 3)
 		{debuted = "Yellow";}
 
 	return {

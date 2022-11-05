@@ -1,8 +1,7 @@
 import * as useFetchQuery from "~/hooks/useFetchQuery";
 import type { PlayerName } from "~/models/PlayerName";
 
-export function useAllPlayerNames(sport: string, name: string): useFetchQuery.QueryInfo<PlayerName[]> {
-    const params = new URLSearchParams({ sport, leagueName: name }).toString();
-    const url = `${process.env.API_ROOT!}player/names?${params}`;
+export function useAllPlayerNames(leagueId: string): useFetchQuery.QueryInfo<PlayerName[]> {
+    const url = `${process.env.API_ROOT!}leagues/${leagueId}/players`;
     return useFetchQuery.useFetchQuery(url);
 }

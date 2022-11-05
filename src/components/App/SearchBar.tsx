@@ -1,20 +1,22 @@
 import { Container, Stack } from "@chakra-ui/react";
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
-import type { ReactElement} from "react";
+import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
+import { ErrorToast } from "../Misc/ErrorToast";
 import { useSportContext } from "~/contexts/SportContext";
 import { useAllPlayerNames } from "~/hooks/data/useAllPlayerNames";
 import type { PlayerName } from "~/models/PlayerName";
-import { ErrorToast } from "../Misc/ErrorToast";
+import { levenshteinDistance } from "~/utils/levenshteinDistance";
+import { useRef } from "react";
 
 type SearchBarProps = {
     submitAction: (player: PlayerName) => void;
-}
+};
 
 export type Item = {
     label: string;
     value: string;
-}
+};
 
 const extractPlayerToItem = (player: PlayerName): Item => {
     const selectItem: Item = {
@@ -26,7 +28,7 @@ const extractPlayerToItem = (player: PlayerName): Item => {
 };
 
 const getSelection = (selectedItems: Item[]): Item[] =>
-	selectedItems.length > 0 ? selectedItems.slice(selectedItems.length - 1) : [];
+    selectedItems.length > 0 ? selectedItems.slice(selectedItems.length - 1) : [];
 
 export function SearchBar(props: SearchBarProps): ReactElement {
     const { submitAction } = props;
@@ -36,45 +38,64 @@ export function SearchBar(props: SearchBarProps): ReactElement {
 
     const { sportsLeague } = useSportContext();
 
-    const { data, error } = useAllPlayerNames(sportsLeague.sport.toString(), sportsLeague.league.toString());
+    const { data, error } = useAllPlayerNames(sportsLeague.id);
 
     useEffect(() => {
-        if (data !== undefined)
-            {setPickerItems(data.map(extractPlayerToItem));}
+        if (data !== undefined) {
+            setPickerItems(data.map(extractPlayerToItem));
+        }
     }, [data, error]);
 
     useEffect(() => {
-		const selection = getSelection(selectedItems);
-		if (selection.length > 0)
-			{submitAction(JSON.parse(selection[0].value) as PlayerName);}
-	}, [selectedItems, submitAction]);
+        const selection = getSelection(selectedItems);
+        if (selection.length > 0) {
+            submitAction(JSON.parse(selection[0].value) as PlayerName);
+            setSelectedItems([]);
 
-    const handleCreateItem = (item: Item): void => {
-        setPickerItems((curr) => [...curr, item]);
-        setSelectedItems((curr) => [...curr, item]);
-    };
+            (document.activeElement as HTMLInputElement).value = "";
+            (document.activeElement as HTMLInputElement).blur();
+        }
+    }, [selectedItems, submitAction]);
 
     const handleSelectedItemsChange = (selected?: Item[]): void => {
-        if (selected !== undefined)
-            {setSelectedItems(selected);}
+        if (selected !== undefined) {
+            setSelectedItems(selected);
+        }
     };
 
     return (
-        <Container maxW="xl">
-            <Stack align="center" spacing={4} direction="row" w="lg">
+        <Container>
+            <Stack align="center" spacing={4} direction="row">
                 <ErrorToast errorMsg={error} />
                 <CUIAutoComplete
                     label=""
                     hideToggleButton={true}
                     placeholder="Guess an Athlete!"
-                    onCreateItem={handleCreateItem}
                     items={pickerItems}
                     selectedItems={getSelection(selectedItems)}
-                    onSelectedItemsChange={(changes): void => { handleSelectedItemsChange(changes.selectedItems); }}
-                    inputStyleProps={{ width: "30em" }}
+                    onSelectedItemsChange={(changes): void => {
+                        handleSelectedItemsChange(changes.selectedItems);
+                    }}
+                    optionFilterFunc={(items, val): Item[] => {
+                        const distances = new Map(
+                            items.map(
+                                (it) =>
+                                    [it.label, levenshteinDistance(it.label.slice(0, val.length), val)] as [
+                                        string,
+                                        number
+                                    ]
+                            )
+                        );
+                        const sorted = items.sort(
+                            (a, b) => (distances.get(a.label) ?? 0) - (distances.get(b.label) ?? 0)
+                        );
+
+                        return sorted.filter((it) => (distances.get(it.label) ?? 0) < val.length / 2);
+                    }}
                     disableCreateItem={true}
-					tagStyleProps={{display: "none"}}
-					highlightItemBg="red.400"
+                    inputStyleProps={{ width: "xl" }}
+                    tagStyleProps={{ display: "none" }}
+                    highlightItemBg="red.400"
                 />
             </Stack>
         </Container>

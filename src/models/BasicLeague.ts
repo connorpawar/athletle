@@ -1,4 +1,7 @@
+import type { Sport, SportsLeague } from "~/types/Enums";
+
 export type BasicLeague = {
-    sport: string;
-    name: string;
+    id: string;
+    sport: Sport;
+    name: SportsLeague;
 };

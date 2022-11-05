@@ -10,11 +10,11 @@ import {
     FaHardHat,
     FaMapMarkerAlt,
 } from "react-icons/fa";
+import { ErrorToast } from "../Misc/ErrorToast";
 import { useSportContext } from "~/contexts/SportContext";
 import { usePlayer } from "~/hooks/data/usePlayer";
 import type { Player, PlayerName } from "~/models";
-import type { Sport, SportsLeague } from "~/types/Enums";
-import { ErrorToast } from "../Misc/ErrorToast";
+import { calculateAge, guessProximity } from "~/utils/guessProximity";
 
 export type CardColor = "None" | "Yellow" | "Green";
 
@@ -30,41 +30,48 @@ export type GuessCardProps = {
     answer: Player;
 };
 
-export function GuessCard({ guess }: GuessCardProps): ReactElement {
-    const { sportsLeague } = useSportContext();
-    
-    const { data, isLoading, error } = usePlayer(
-        sportsLeague.sport.toString(),
-        sportsLeague.league.toString(),
-        guess.teamName,
-        guess.name,
-        guess.position);
+const toFeetandInches = (inches: number): string => 
+    (`${Math.floor(inches/12)} ${  Math.round(inches%12)}'`).toString()
 
-    if (isLoading) {
+export function GuessCard({ guess, answer }: GuessCardProps): ReactElement {
+    const { data, isLoading, error } = usePlayer(guess.id);
+
+    if (isLoading || (data === undefined)) {
         return <div />;
     }
 
+    const {
+        team,
+		conference,
+		jersey,
+		position,
+		height,
+		weight,
+		age
+    } = guessProximity(data, answer);
+
     return (
         <>
-        <ErrorToast errorMsg={error} />
-        <Box mx="auto" px={{ base: 2, sm: 12, md: 17 }}>
-            <SimpleGrid columns={9} spacing={{ base: 2, lg: 6 }}>
-                <StatsCard title="Name" stat={data?.displayName ?? ""} icon={<div />} color="None" />
-                <StatsCard
-                    title="Team"
-                    stat={data?.team.shortDisplayName ?? ""}
-                    icon={<FaUserFriends size="1em" />}
-                    color="None"
-                />
-                <StatsCard title="Conf." stat="7" icon={<FaMapMarkerAlt size="1em" />} color="None" />
-                <StatsCard title="Jersey" stat="7" icon={<FaTshirt size="1em" />} color="Yellow" />
-                <StatsCard title="Pos." stat="7" icon={<FaHardHat size="1em" />} color="None" />
-                <StatsCard title="Height" stat="7" icon={<FaTape size="1em" />} color="Green" />
-                <StatsCard title="Weight" stat="7" icon={<FaBalanceScale size="1em" />} color="None" />
-                <StatsCard title="Age" stat="7" icon={<FaAddressBook size="1em" />} color="None" />
-                <StatsCard title="Debuted" stat="7" icon={<FaCalendar size="1em" />} color="None" />
-            </SimpleGrid>
-        </Box>
+            <ErrorToast errorMsg={error} />
+            <Box px={{ base: 2, sm: 12, md: 17 }}>
+                <SimpleGrid marginX="auto" columns={8} spacing={{ base: 2, lg: 6 }}>
+                    <StatsCard title="Name" stat={data.displayName} icon={<div />} color="None" />
+                    <StatsCard
+                        title="Team"
+                        stat={data.team.shortDisplayName}
+                        icon={<FaUserFriends size="1em" />}
+                        color={team}
+                    />
+                    <StatsCard title="Conf." stat={data.team.group.name} icon={<FaMapMarkerAlt size="1em" />} color={conference} />
+                    <StatsCard title="Jersey" stat={data.jersey} icon={<FaTshirt size="1em" />} color={jersey} />
+                    <StatsCard title="Pos." stat={data.position.abbreviation} icon={<FaHardHat size="1em" />} color={position} />
+                    <StatsCard title="Height" stat={toFeetandInches(data.height)} icon={<FaTape size="1em" />} color={height} />
+                    <StatsCard title="Weight" stat={`${data.weight.toString()} lbs`} icon={<FaBalanceScale size="1em" />} color={weight} />
+                    <StatsCard title="Age" stat={
+                        calculateAge(data.dateOfBirth).toString()
+                    }  icon={<FaAddressBook size="1em" />} color={age} />
+                </SimpleGrid>
+            </Box>
         </>
     );
 }
@@ -83,11 +90,13 @@ function StatsCard(props: StatsCardProps): ReactElement {
             borderColor={useColorModeValue("gray.800", "gray.500")}
             rounded="lg"
             backgroundColor={bgColor}
+            width="7vw"
+            height="14vh"
         >
-            <Flex justifyContent="space-between">
+            <Flex justifyContent="space-around">
                 <Box pl={{ base: 1, md: 2 }}>
                     <StatLabel fontWeight="light">{title}</StatLabel>
-                    <StatNumber fontSize="md" fontWeight="medium">
+                    <StatNumber fontSize="2vh" fontWeight="medium" wordBreak="break-word">
                         {stat}
                     </StatNumber>
                 </Box>
