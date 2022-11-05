@@ -22,10 +22,10 @@ import { ColorfulBackdrop } from "../Misc/ColorfulBackdrop";
 import { ErrorToast } from "../Misc/ErrorToast";
 import { GuessCard } from "./GuessCard";
 import { PlayerCard } from "./PlayerCard";
+import { WinningCard } from "./WinningCard";
 import { useSportContext } from "~/contexts/SportContext";
 import { usePlayerSelection } from "~/hooks/data/usePlayerSelection";
 import type { PlayerName, Player } from "~/models";
-import { WinningCard } from "./WinningCard";
 
 export function GameBoard(): ReactElement {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -83,6 +83,11 @@ export function GameBoard(): ReactElement {
         setGuesses((prev) => [...prev, guess]);
     };
 
+    const goHome = (): void => {
+        onWinClose();
+        window.location.reload();
+    }
+
     if (isLoading) {
         return <Center><Spinner size='xl' color="red.500"/></Center>
     }
@@ -113,7 +118,7 @@ export function GameBoard(): ReactElement {
                             </ModalFooter>
                         </ModalContent>
                     </Modal>
-                    <Modal onClose={onWinClose} isOpen={isWinOpen} isCentered={true}>
+                    <Modal onClose={goHome} isOpen={isWinOpen} isCentered={true}>
                         <ModalOverlay />
                         <ModalContent>
                             <ModalHeader>You've got it!</ModalHeader>
@@ -122,7 +127,7 @@ export function GameBoard(): ReactElement {
                                 <WinningCard player={answer} />
                             </ModalBody>
                             <ModalFooter>
-                                <Button onClick={onClose}>Close</Button>
+                                <Button onClick={goHome}>Close</Button>
                             </ModalFooter>
                         </ModalContent>
                     </Modal>
@@ -136,11 +141,15 @@ export function GameBoard(): ReactElement {
                         <Box
                             position="absolute"
                             zIndex="1"
+                            left="0"
+                            right="0"
                         >
                             <SearchBar submitAction={onSubmit} />
                         </Box>
                         <Box
                             paddingTop="150px"
+                            overflowX="auto"
+                            minWidth="full"
                         >
                         {guesses.map((g, i) => (
                             <ColorfulBackdrop key={g.name} index={i}>

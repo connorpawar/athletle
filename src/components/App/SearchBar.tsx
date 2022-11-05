@@ -1,4 +1,4 @@
-import { Container, Stack } from "@chakra-ui/react";
+import { Container, Stack, useBreakpointValue } from "@chakra-ui/react";
 import { CUIAutoComplete } from "chakra-ui-autocomplete";
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
@@ -7,7 +7,6 @@ import { useSportContext } from "~/contexts/SportContext";
 import { useAllPlayerNames } from "~/hooks/data/useAllPlayerNames";
 import type { PlayerName } from "~/models/PlayerName";
 import { levenshteinDistance } from "~/utils/levenshteinDistance";
-import { useRef } from "react";
 
 type SearchBarProps = {
     submitAction: (player: PlayerName) => void;
@@ -40,6 +39,19 @@ export function SearchBar(props: SearchBarProps): ReactElement {
 
     const { data, error } = useAllPlayerNames(sportsLeague.id);
 
+    const barWidth = useBreakpointValue(
+        {
+            base: "xs",
+            sm: "xs",
+            md: "sm",
+            lg: "lg",
+            xl: "xl",
+        },
+        {
+            fallback: "sm",
+        }
+    );
+
     useEffect(() => {
         if (data !== undefined) {
             setPickerItems(data.map(extractPlayerToItem));
@@ -65,39 +77,32 @@ export function SearchBar(props: SearchBarProps): ReactElement {
 
     return (
         <Container>
-            <Stack align="center" spacing={4} direction="row">
-                <ErrorToast errorMsg={error} />
-                <CUIAutoComplete
-                    label=""
-                    hideToggleButton={true}
-                    placeholder="Guess an Athlete!"
-                    items={pickerItems}
-                    selectedItems={getSelection(selectedItems)}
-                    onSelectedItemsChange={(changes): void => {
-                        handleSelectedItemsChange(changes.selectedItems);
-                    }}
-                    optionFilterFunc={(items, val): Item[] => {
-                        const distances = new Map(
-                            items.map(
-                                (it) =>
-                                    [it.label, levenshteinDistance(it.label.slice(0, val.length), val)] as [
-                                        string,
-                                        number
-                                    ]
-                            )
-                        );
-                        const sorted = items.sort(
-                            (a, b) => (distances.get(a.label) ?? 0) - (distances.get(b.label) ?? 0)
-                        );
+            <ErrorToast errorMsg={error} />
+            <CUIAutoComplete
+                label=""
+                hideToggleButton={true}
+                placeholder="Guess an Athlete!"
+                items={pickerItems}
+                selectedItems={getSelection(selectedItems)}
+                onSelectedItemsChange={(changes): void => {
+                    handleSelectedItemsChange(changes.selectedItems);
+                }}
+                optionFilterFunc={(items, val): Item[] => {
+                    const distances = new Map(
+                        items.map(
+                            (it) =>
+                                [it.label, levenshteinDistance(it.label.slice(0, val.length), val)] as [string, number]
+                        )
+                    );
+                    const sorted = items.sort((a, b) => (distances.get(a.label) ?? 0) - (distances.get(b.label) ?? 0));
 
-                        return sorted.filter((it) => (distances.get(it.label) ?? 0) < val.length / 2);
-                    }}
-                    disableCreateItem={true}
-                    inputStyleProps={{ width: "xl" }}
-                    tagStyleProps={{ display: "none" }}
-                    highlightItemBg="red.400"
-                />
-            </Stack>
+                    return sorted.filter((it) => (distances.get(it.label) ?? 0) < val.length / 2);
+                }}
+                disableCreateItem={true}
+                inputStyleProps={{ width: barWidth }}
+                tagStyleProps={{ display: "none" }}
+                highlightItemBg="red.400"
+            />
         </Container>
     );
 }

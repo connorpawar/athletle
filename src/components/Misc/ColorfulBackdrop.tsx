@@ -19,12 +19,11 @@ export function ColorfulBackdrop(props: ColorfulBackdropProps): ReactElement {
     return (
         <Flex
             boxShadow="lg"
-            maxH="16em"
             direction={{ base: "column-reverse", md: "row" }}
             width="full"
             rounded="xl"
             p={5}
-            mb={10}
+            mb={5}
             justifyContent="space-between"
             position="relative"
             bg={useColorModeValue("white", "gray.800")}
