@@ -53,8 +53,8 @@ export function GuessCard({ guess, answer }: GuessCardProps): ReactElement {
     return (
         <>
             <ErrorToast errorMsg={error} />
-            <Box mx="auto" px={{ base: 2, sm: 12, md: 17 }}>
-                <SimpleGrid columns={8} spacing={{ base: 2, lg: 6 }}>
+            <Box px={{ base: 2, sm: 12, md: 17 }}>
+                <SimpleGrid marginX="auto" columns={8} spacing={{ base: 2, lg: 6 }}>
                     <StatsCard title="Name" stat={data.displayName} icon={<div />} color="None" />
                     <StatsCard
                         title="Team"
@@ -90,11 +90,13 @@ function StatsCard(props: StatsCardProps): ReactElement {
             borderColor={useColorModeValue("gray.800", "gray.500")}
             rounded="lg"
             backgroundColor={bgColor}
+            width="7vw"
+            height="14vh"
         >
             <Flex justifyContent="space-around">
                 <Box pl={{ base: 1, md: 2 }}>
                     <StatLabel fontWeight="light">{title}</StatLabel>
-                    <StatNumber fontSize="md" fontWeight="medium">
+                    <StatNumber fontSize="2vh" fontWeight="medium" wordBreak="break-word">
                         {stat}
                     </StatNumber>
                 </Box>

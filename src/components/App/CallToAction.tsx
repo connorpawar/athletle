@@ -75,7 +75,6 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                             colorScheme="red"
                             bg="red.400"
                             _hover={{ bg: "red.500" }}
-                            onClick={onButtonClick}
                         >
                             Statistics
                         </Button>

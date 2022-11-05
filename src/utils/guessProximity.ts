@@ -39,6 +39,12 @@ export const guessProximity: GuessProximity = (guess, answer) => {
 	const guessAge = calculateAge(guess.dateOfBirth);
 	const answerAge = calculateAge(answer.dateOfBirth);
 
+	if (guess.displayName === answer.displayName)
+		{team = "Green";}
+
+	if (guess.team.group.name === answer.team.group.name)
+		{team = "Green";}
+
 	if (guess.team.displayName === answer.team.displayName)
 		{team = "Green";}
 

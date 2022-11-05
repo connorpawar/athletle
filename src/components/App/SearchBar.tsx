@@ -51,8 +51,9 @@ export function SearchBar(props: SearchBarProps): ReactElement {
         if (selection.length > 0) {
             submitAction(JSON.parse(selection[0].value) as PlayerName);
             setSelectedItems([]);
-            
-            (document.activeElement as HTMLElement).blur()
+
+            (document.activeElement as HTMLInputElement).value = "";
+            (document.activeElement as HTMLInputElement).blur();
         }
     }, [selectedItems, submitAction]);
 

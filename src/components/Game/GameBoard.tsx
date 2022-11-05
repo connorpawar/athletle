@@ -13,7 +13,7 @@ import {
     ModalOverlay,
     Stack,
     useDisclosure,
-    VStack,
+    Spinner,
 } from "@chakra-ui/react";
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
@@ -25,9 +25,12 @@ import { PlayerCard } from "./PlayerCard";
 import { useSportContext } from "~/contexts/SportContext";
 import { usePlayerSelection } from "~/hooks/data/usePlayerSelection";
 import type { PlayerName, Player } from "~/models";
+import { WinningCard } from "./WinningCard";
 
 export function GameBoard(): ReactElement {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen: isWinOpen, onOpen: onWinOpen, onClose: onWinClose } = useDisclosure();
+
     const [answer, setAnswer] = useState<Player>({
         displayName: "",
         headshot: "",
@@ -68,10 +71,21 @@ export function GameBoard(): ReactElement {
         }
     }, [data]);
 
+    useEffect(() => {
+        if( guesses.length > 1 && guesses[guesses.length - 1].name === answer.displayName ) {
+            onWinOpen();
+            setGuesses([]);
+        }
+    }, [guesses, answer, onWinOpen]);
+
     const onSubmit = (guess: PlayerName): void => {
         console.log(`You've guessed ${guess.name}!`);
         setGuesses((prev) => [...prev, guess]);
     };
+
+    if (isLoading) {
+        return <Center><Spinner size='xl' color="red.500"/></Center>
+    }
 
     return (
         <Container maxW="7xl">
@@ -92,7 +106,20 @@ export function GameBoard(): ReactElement {
                             <ModalHeader>Who is it?</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
-                                <PlayerCard image="./silhouette.jpg" />
+                                <PlayerCard image={answer.headshot} />
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button onClick={onClose}>Close</Button>
+                            </ModalFooter>
+                        </ModalContent>
+                    </Modal>
+                    <Modal onClose={onWinClose} isOpen={isWinOpen} isCentered={true}>
+                        <ModalOverlay />
+                        <ModalContent>
+                            <ModalHeader>You've got it!</ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                                <WinningCard player={answer} />
                             </ModalBody>
                             <ModalFooter>
                                 <Button onClick={onClose}>Close</Button>
@@ -108,6 +135,7 @@ export function GameBoard(): ReactElement {
                     >
                         <Box
                             position="absolute"
+                            marginX="30%"
                             zIndex="1"
                         >
                             <SearchBar submitAction={onSubmit} />

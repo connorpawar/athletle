@@ -23,7 +23,8 @@ export function ColorfulBackdrop(props: ColorfulBackdropProps): ReactElement {
             direction={{ base: "column-reverse", md: "row" }}
             width="full"
             rounded="xl"
-            p={10}
+            p={5}
+            mb={10}
             justifyContent="space-between"
             position="relative"
             bg={useColorModeValue("white", "gray.800")}
