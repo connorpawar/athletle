@@ -1,12 +1,12 @@
-import { Container, Stack, useBreakpointValue } from "@chakra-ui/react";
-import { CUIAutoComplete } from "chakra-ui-autocomplete";
+import { Container, useBreakpointValue } from "@chakra-ui/react";
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
 import { ErrorToast } from "../Misc/ErrorToast";
+import type { Option } from "~/components/Misc/AutoComplete";
+import { Autocomplete } from "~/components/Misc/AutoComplete";
 import { useSportContext } from "~/contexts/SportContext";
 import { useAllPlayerNames } from "~/hooks/data/useAllPlayerNames";
 import type { PlayerName } from "~/models/PlayerName";
-import { levenshteinDistance } from "~/utils/levenshteinDistance";
 
 type SearchBarProps = {
     submitAction: (player: PlayerName) => void;
@@ -17,8 +17,8 @@ export type Item = {
     value: string;
 };
 
-const extractPlayerToItem = (player: PlayerName): Item => {
-    const selectItem: Item = {
+const extractPlayerToItem = (player: PlayerName): Option => {
+    const selectItem: Option = {
         value: JSON.stringify(player),
         label: player.name,
     };
@@ -32,12 +32,12 @@ const getSelection = (selectedItems: Item[]): Item[] =>
 export function SearchBar(props: SearchBarProps): ReactElement {
     const { submitAction } = props;
 
-    const [pickerItems, setPickerItems] = useState<Item[]>([]);
-    const [selectedItems, setSelectedItems] = useState<Item[]>([]);
+    const [result, setResult] = useState<Option[]>([]);
+    const [options, setOptions] = useState<Option[]>([]);
 
     const { sportsLeague } = useSportContext();
 
-    const { data, error } = useAllPlayerNames(sportsLeague.id);
+    const { data: allPlayers, error } = useAllPlayerNames(sportsLeague.id);
 
     const barWidth = useBreakpointValue(
         {
@@ -53,55 +53,34 @@ export function SearchBar(props: SearchBarProps): ReactElement {
     );
 
     useEffect(() => {
-        if (data !== undefined) {
-            setPickerItems(data.map(extractPlayerToItem));
+        if (allPlayers !== undefined) {
+            setOptions(allPlayers.map(extractPlayerToItem));
         }
-    }, [data, error]);
+    }, [allPlayers, error]);
 
     useEffect(() => {
-        const selection = getSelection(selectedItems);
+        const selection = getSelection(result);
         if (selection.length > 0) {
             submitAction(JSON.parse(selection[0].value) as PlayerName);
-            setSelectedItems([]);
+            setResult([]);
 
             (document.activeElement as HTMLInputElement).value = "";
             (document.activeElement as HTMLInputElement).blur();
         }
-    }, [selectedItems, submitAction]);
-
-    const handleSelectedItemsChange = (selected?: Item[]): void => {
-        if (selected !== undefined) {
-            setSelectedItems(selected);
-        }
-    };
+    }, [result, submitAction]);
 
     return (
         <Container>
             <ErrorToast errorMsg={error} />
-            <CUIAutoComplete
-                label=""
-                hideToggleButton={true}
-                placeholder="Guess an Athlete!"
-                items={pickerItems}
-                selectedItems={getSelection(selectedItems)}
-                onSelectedItemsChange={(changes): void => {
-                    handleSelectedItemsChange(changes.selectedItems);
+            <Autocomplete
+                options={options}
+                result={result}
+                setResult={(opts: Option[]): void => {
+                    setResult(opts);
                 }}
-                optionFilterFunc={(items, val): Item[] => {
-                    const distances = new Map(
-                        items.map(
-                            (it) =>
-                                [it.label, levenshteinDistance(it.label.slice(0, val.length), val)] as [string, number]
-                        )
-                    );
-                    const sorted = items.sort((a, b) => (distances.get(a.label) ?? 0) - (distances.get(b.label) ?? 0));
-
-                    return sorted.filter((it) => (distances.get(it.label) ?? 0) < val.length / 2);
-                }}
-                disableCreateItem={true}
-                inputStyleProps={{ width: barWidth }}
-                tagStyleProps={{ display: "none" }}
-                highlightItemBg="red.400"
+                limit={5}
+                placeholder="Autocomplete"
+                style={{ width: barWidth }}
             />
         </Container>
     );
