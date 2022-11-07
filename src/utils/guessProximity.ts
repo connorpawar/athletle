@@ -25,7 +25,7 @@ export const calculateAge = (dob: Date): number => {
 
 export const guessProximity: GuessProximity = (guess, answer) => {
 	let team: CardColor = "None";
-	const conference: CardColor = "None";
+	let conference: CardColor = "None";
 	let jersey: CardColor = "None";
 	let position: CardColor = "None";
 	let height: CardColor = "None";
@@ -39,11 +39,12 @@ export const guessProximity: GuessProximity = (guess, answer) => {
 	const guessAge = calculateAge(guess.dateOfBirth);
 	const answerAge = calculateAge(answer.dateOfBirth);
 
-	if (guess.displayName === answer.displayName)
-		{team = "Green";}
-
 	if (guess.team.group.name === answer.team.group.name)
-		{team = "Green";}
+		{conference = "Green";}
+	
+	// eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
+	if (guess.team.group.name.slice(0,3) === answer.team.group.name.slice(0,3))
+		{conference = "Green";}
 
 	if (guess.team.displayName === answer.team.displayName)
 		{team = "Green";}

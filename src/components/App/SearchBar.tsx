@@ -79,7 +79,7 @@ export function SearchBar(props: SearchBarProps): ReactElement {
                     setResult(opts);
                 }}
                 limit={5}
-                placeholder="Autocomplete"
+                placeholder="Guess A Player!"
                 style={{ width: barWidth }}
             />
         </Container>
