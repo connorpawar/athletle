@@ -42,12 +42,11 @@ export const guessProximity: GuessProximity = (guess, answer) => {
 	if (guess.team.group.name === answer.team.group.name)
 		{conference = "Green";}
 	
-	// eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
-	if (guess.team.group.name.slice(0,3) === answer.team.group.name.slice(0,3))
-		{conference = "Green";}
-
 	if (guess.team.displayName === answer.team.displayName)
 		{team = "Green";}
+	// eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
+	else if (guess.team.group.name.slice(0,3) === answer.team.group.name.slice(0,3))
+		{conference = "Yellow";}
 
 	if (guessJerseyNum === answerJerseyNum)
 		{jersey = "Green";}
