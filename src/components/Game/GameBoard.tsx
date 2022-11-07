@@ -25,11 +25,29 @@ import { PlayerCard } from "./PlayerCard";
 import { WinningCard } from "./WinningCard";
 import { useSportContext } from "~/contexts/SportContext";
 import { usePlayerSelection } from "~/hooks/data/usePlayerSelection";
+import { useLocalStorage } from "~/hooks/useLocalStorage";
 import type { PlayerName, Player } from "~/models";
+
+type StoredGuesses = {
+    date: string;
+    latestGuesses: PlayerName[];
+    gamesPlayed: number;
+};
 
 export function GameBoard(): ReactElement {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { isOpen: isWinOpen, onOpen: onWinOpen, onClose: onWinClose } = useDisclosure();
+    const { isOpen: isLoseOpen, onOpen: onLoseOpen, onClose: onLoseClose } = useDisclosure();
+
+    const defaultStoredGuesses: StoredGuesses = {
+        date: new Date().toLocaleDateString(),
+        latestGuesses: [],
+        gamesPlayed: 0
+    };
+
+    const [storedData, setStoredData] = useLocalStorage("storedData", JSON.stringify(defaultStoredGuesses));
+    const [alreadyPlayedToday, setAlreadyPlayedToday] = useState<boolean>(false);
+    const [gamesPlayed, setGamesPlayed] = useState<number>(0);
 
     const [answer, setAnswer] = useState<Player>({
         displayName: "",
@@ -66,30 +84,64 @@ export function GameBoard(): ReactElement {
     const { data, isLoading, error } = usePlayerSelection(sportsLeague.id);
 
     useEffect(() => {
+        const guessData = JSON.parse(storedData) as StoredGuesses;
+        const today = new Date().toLocaleDateString();
+        if (guessData.date === today) {
+            setGuesses(guessData.latestGuesses);
+            setAlreadyPlayedToday(true);
+            setGamesPlayed(guessData.gamesPlayed);
+        }
+    }, [storedData]);
+
+    useEffect(() => {
         if (data !== undefined) {
             setAnswer(data);
         }
     }, [data]);
 
     useEffect(() => {
-        if( guesses.length > 1 && guesses[guesses.length - 1].name === answer.displayName ) {
+        if (guesses.length > 1 && guesses[guesses.length - 1].name === answer.displayName) {
             onWinOpen();
+            setStoredData(
+                JSON.stringify({
+                    date: new Date().toLocaleDateString(),
+                    latestGuesses: guesses,
+                    gamesPlayed: gamesPlayed + (alreadyPlayedToday ? 0 : 1)
+                })
+            );
             setGuesses([]);
+        } else if (guesses.length > 7) {
+            onLoseOpen();
+            setStoredData(
+                JSON.stringify({
+                    date: new Date().toLocaleDateString(),
+                    latestGuesses: guesses,
+                    gamesPlayed: gamesPlayed + (alreadyPlayedToday ? 0 : 1)
+                })
+            );
         }
-    }, [guesses, answer, onWinOpen]);
+    }, [guesses, answer, onWinOpen, setStoredData, gamesPlayed, alreadyPlayedToday]);
 
     const onSubmit = (guess: PlayerName): void => {
-        console.log(`You've guessed ${guess.name}!`);
         setGuesses((prev) => [...prev, guess]);
     };
 
-    const goHome = (): void => {
+    const goHomeWin = (): void => {
         onWinClose();
         window.location.reload();
-    }
+    };
+
+    const goHomeLose = (): void => {
+        onWinClose();
+        window.location.reload();
+    };
 
     if (isLoading) {
-        return <Center><Spinner size='xl' color="red.500"/></Center>
+        return (
+            <Center>
+                <Spinner size="xl" color="red.500" />
+            </Center>
+        );
     }
 
     return (
@@ -118,7 +170,7 @@ export function GameBoard(): ReactElement {
                             </ModalFooter>
                         </ModalContent>
                     </Modal>
-                    <Modal onClose={goHome} isOpen={isWinOpen} isCentered={true}>
+                    <Modal onClose={goHomeWin} isOpen={isWinOpen} isCentered={true}>
                         <ModalOverlay />
                         <ModalContent>
                             <ModalHeader>You've got it!</ModalHeader>
@@ -127,35 +179,36 @@ export function GameBoard(): ReactElement {
                                 <WinningCard player={answer} />
                             </ModalBody>
                             <ModalFooter>
-                                <Button onClick={goHome}>Close</Button>
+                                <Button onClick={goHomeWin}>Close</Button>
+                            </ModalFooter>
+                        </ModalContent>
+                    </Modal>
+                    <Modal onClose={goHomeLose} isOpen={isLoseOpen} isCentered={true}>
+                        <ModalOverlay />
+                        <ModalContent>
+                            <ModalHeader>Better Luck Next Time!</ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                                <WinningCard player={answer} />
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button onClick={goHomeLose}>Close</Button>
                             </ModalFooter>
                         </ModalContent>
                     </Modal>
                     <Center mb="12em">
                         <Heading color="red.400">{sportsLeague.league}</Heading>
                     </Center>
-                    <Box
-                        position="relative"
-                        display="block"
-                    >
-                        <Box
-                            position="absolute"
-                            zIndex="1"
-                            left="0"
-                            right="0"
-                        >
+                    <Box position="relative" display="block">
+                        <Box position="absolute" zIndex="1" left="0" right="0">
                             <SearchBar submitAction={onSubmit} />
                         </Box>
-                        <Box
-                            paddingTop="150px"
-                            overflowX="auto"
-                            minWidth="full"
-                        >
-                        {guesses.map((g, i) => (
-                            <ColorfulBackdrop key={g.name} index={i}>
-                                <GuessCard guess={g} answer={answer} />
-                            </ColorfulBackdrop>
-                        ))}
+                        <Box paddingTop="150px" overflowX="auto" minWidth="full">
+                            {guesses.map((g, i) => (
+                                <ColorfulBackdrop key={g.name} index={i}>
+                                    <GuessCard guess={g} answer={answer} />
+                                </ColorfulBackdrop>
+                            ))}
                         </Box>
                     </Box>
                 </Stack>
