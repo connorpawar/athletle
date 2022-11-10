@@ -100,7 +100,7 @@ export function GameBoard(): ReactElement {
     }, [data]);
 
     useEffect(() => {
-        if (guesses.length > 1 && guesses[guesses.length - 1].name === answer.displayName) {
+        if (guesses.length > 0 && guesses[guesses.length - 1].name === answer.displayName) {
             onWinOpen();
             setStoredData(
                 JSON.stringify({
@@ -120,7 +120,7 @@ export function GameBoard(): ReactElement {
                 })
             );
         }
-    }, [guesses, answer, onWinOpen, setStoredData, gamesPlayed, alreadyPlayedToday]);
+    }, [guesses, answer, onWinOpen, setStoredData, gamesPlayed, alreadyPlayedToday, onLoseOpen]);
 
     const onSubmit = (guess: PlayerName): void => {
         setGuesses((prev) => [...prev, guess]);
