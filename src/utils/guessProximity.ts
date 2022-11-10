@@ -10,6 +10,7 @@ export type GuessProximityResponse = {
 	weight: CardColor;
 	age: CardColor;
 	debuted: CardColor;
+	asEmoji: string;
 }
 
 export type GuessProximity = (
@@ -22,6 +23,13 @@ export const calculateAge = (dob: Date): number => {
 	const ageDate = new Date(ageDifMs);
 	return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
+
+const toEmoji = (color: CardColor): string =>
+	color === "Green"
+	? "🟢"
+	: color === "Yellow"
+		? "🟡"
+		: "⚪";
 
 export const guessProximity: GuessProximity = (guess, answer) => {
 	let team: CardColor = "None";
@@ -84,6 +92,7 @@ export const guessProximity: GuessProximity = (guess, answer) => {
 		height,
 		weight,
 		age,
-		debuted
+		debuted,
+		asEmoji: `${toEmoji(team)+ toEmoji(conference) + toEmoji(jersey) + toEmoji(position) + toEmoji(height) + toEmoji(weight) + toEmoji(age)}`
 	}
 }
