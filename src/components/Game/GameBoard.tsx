@@ -125,6 +125,7 @@ export function GameBoard(): ReactElement {
                     )
                 }, mapReplacer)
             );
+            setAlreadyPlayedToday(true);
             setGuesses([]);
         } else if (guesses.length > 7) {
             onLoseOpen();
@@ -137,6 +138,7 @@ export function GameBoard(): ReactElement {
                     guessDistribution: guessDistribution
                 }, mapReplacer)
             );
+            setAlreadyPlayedToday(true);
         }
     }, [guesses, answer, onWinOpen, setStoredData, gamesPlayed, alreadyPlayedToday, onLoseOpen, currentStreak, guessDistribution]);
 
