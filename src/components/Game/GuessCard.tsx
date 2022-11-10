@@ -53,7 +53,7 @@ export function GuessCard({ guess, answer }: GuessCardProps): ReactElement {
         <>
             <ErrorToast errorMsg={error} />
             <Box px={{ base: 0, sm: 6, md: 12 }}>
-                <Heading size="lg" color="red.400" mb="6">{data.displayName}</Heading>
+                <Heading size="lg" color="red.400" mt="3">{data.displayName}</Heading>
                 <SimpleGrid columns={7} spacing={{ base: 2, lg: 6 }}>
                     <StatsCard
                         title="Team"

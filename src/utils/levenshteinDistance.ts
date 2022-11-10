@@ -28,7 +28,11 @@ export const levenshteinDistance = (str1 = "", str2 = ""): number => {
 export const levenshteinSorter = (options: Option[], value: string, limit: number): Option[] => {
     const distances = new Map(
         options.map(
-            (opt) => [opt.label, levenshteinDistance(opt.label.slice(0, value.length), value)] as [string, number]
+            (opt) => {
+                const fullWord = levenshteinDistance(opt.label.slice(0, value.length), value);
+                const secondWord = levenshteinDistance(opt.label.slice(opt.label.indexOf(" ")), value);
+                return [opt.label, Math.min(fullWord, secondWord)] as [string, number];
+            }
         )
     );
     const sorted = options.sort((a, b) => (distances.get(a.label) ?? 0) - (distances.get(b.label) ?? 0));

@@ -14,6 +14,7 @@ import {
     Stack,
     useDisclosure,
     Spinner,
+    Text,
 } from "@chakra-ui/react";
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
@@ -203,7 +204,10 @@ export function GameBoard(): ReactElement {
                         <Box position="absolute" zIndex="1" left="0" right="0">
                             <SearchBar submitAction={onSubmit} />
                         </Box>
-                        <Box paddingTop="150px" overflowX="auto" minWidth="full">
+                        <Text color="red.400" size="xl" fontWeight="bold">
+                            {`Guesses : ${guesses.length} / 8`}
+                        </Text>
+                        <Box paddingTop="128px" overflowX="auto" minWidth="full">
                             {guesses.map((g, i) => (
                                 <ColorfulBackdrop key={g.name} index={i}>
                                     <GuessCard guess={g} answer={answer} />

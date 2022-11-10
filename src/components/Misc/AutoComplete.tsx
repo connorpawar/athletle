@@ -111,13 +111,14 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                         borderWidth="1px"
                         borderColor="gray.200"
                         borderRadius="md"
-                        boxShadow="6px 5px 8px rgba(0,50,30,0.02)"
+                        background="red.400"
+                        boxShadow="6px 5px 8px rgba(0,50,30,0.1)"
                         mt={2}
                     >
                         {partialResult?.map((option) => (
                             <ListItem
                                 key={option.value}
-                                _hover={{ bg: bgHoverColor !== undefined ? bgHoverColor : "gray.100" }}
+                                _hover={{ bg: bgHoverColor !== undefined ? bgHoverColor : "gray.400" }}
                                 my={1}
                                 p={2}
                                 cursor="pointer"
@@ -125,7 +126,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                                     selectOptionFromList(option);
                                 }}
                             >
-                                <Flex align="center">{option.label}</Flex>
+                                <Flex align="center" textColor="white">{option.label}</Flex>
                             </ListItem>
                         ))}
                         {partialResult?.length === undefined && (
