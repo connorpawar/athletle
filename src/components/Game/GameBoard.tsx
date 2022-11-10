@@ -118,15 +118,13 @@ export function GameBoard(): ReactElement {
                     date: new Date().toLocaleDateString(),
                     latestGuesses: guesses,
                     gamesPlayed: gamesPlayed + (alreadyPlayedToday ? 0 : 1),
-                    currentStreak: currentStreak + 1,
+                    currentStreak: currentStreak + (alreadyPlayedToday ? 0 : 1),
                     guessDistribution: guessDistribution.set(
                         guesses.length,
                         guessDistribution.get(guesses.length) ?? 0 + 1
                     )
                 }, mapReplacer)
             );
-            setAlreadyPlayedToday(true);
-            setGuesses([]);
         } else if (guesses.length > 7) {
             onLoseOpen();
             setStoredData(
@@ -139,6 +137,7 @@ export function GameBoard(): ReactElement {
                 }, mapReplacer)
             );
             setAlreadyPlayedToday(true);
+            setGuesses([]);
         }
     }, [guesses, answer, onWinOpen, setStoredData, gamesPlayed, alreadyPlayedToday, onLoseOpen, currentStreak, guessDistribution]);
 

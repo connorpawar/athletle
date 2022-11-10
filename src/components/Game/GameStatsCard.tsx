@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { Text, Center, Heading, Stack, Box, SimpleGrid, Button, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from "@chakra-ui/react";
+import { Text, Center, Stack, Box, SimpleGrid, Button, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from "@chakra-ui/react";
 import type { ReactElement} from "react";
 import { useState } from "react";
 import { SuccessToast } from "../Misc/SuccessToast";
@@ -42,7 +42,7 @@ export function GameStatsCard({
     return (
         <Center py={12}>
             <Stack align="left">
-            <Accordion allowToggle>
+            <Accordion allowToggle={true}>
                 <AccordionItem>
                     <h2>
                     <AccordionButton>
