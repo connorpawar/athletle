@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { IconProps, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react";
-import {
+import type { IconProps} from "@chakra-ui/react";
+import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure ,
     Container,
     Stack,
     Flex,
@@ -20,9 +20,9 @@ import {
 } from "@chakra-ui/react";
 import type { ReactElement } from "react";
 import { ErrorToast } from "../Misc/ErrorToast";
+import { StatsPage } from "../Misc/StatsPage";
 import { useSportContext } from "~/contexts/SportContext";
 import { useAllLeagues } from "~/hooks/data/useAllLeagues";
-import { StatsPage } from "../Misc/StatsPage";
 
 export type CallToActionProps = {
     onButtonClick: VoidFunction;

@@ -41,7 +41,7 @@ export function WinningCard({ player }: WinningCardProps): ReactElement {
                 >
                     <Silhouette height={230} width={282} objectFit="contain" src={player.headshot} showOriginal={true} />
                 </Box>
-                <Stack pt={10} align="center">
+                <Stack align="center">
                     <Heading fontSize="2xl" fontFamily="body" fontWeight={500}>
                         {player.displayName}
                     </Heading>
