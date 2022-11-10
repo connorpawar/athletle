@@ -83,6 +83,10 @@ export function GameStatsCard({
                         onClick={(): unknown => copyScores(fullPlayerData as Player[], answer, setToastText)}>
                         Share Your Score!
                     </Button>)}
+                    <br />
+                    <a href="https://www.buymeacoffee.com/athletle" target="_blank" rel="noreferrer">
+                        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style={{height: "60px", width: "217px"}} />
+                    </a>
             </Stack>
             <SuccessToast msg={toastText} />
         </Center>
