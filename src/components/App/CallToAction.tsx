@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import type { IconProps } from "@chakra-ui/react";
+import { IconProps, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react";
 import {
     Container,
     Stack,
@@ -22,6 +22,7 @@ import type { ReactElement } from "react";
 import { ErrorToast } from "../Misc/ErrorToast";
 import { useSportContext } from "~/contexts/SportContext";
 import { useAllLeagues } from "~/hooks/data/useAllLeagues";
+import { StatsPage } from "../Misc/StatsPage";
 
 export type CallToActionProps = {
     onButtonClick: VoidFunction;
@@ -30,7 +31,9 @@ export type CallToActionProps = {
 export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement {
     const displayImage = useBreakpointValue({ base: true, md: false });
     const { data: leagues, isLoading, error } = useAllLeagues();
+    const { isOpen: isStatsOpen, onOpen: onStatsOpen, onClose: onStatsClose } = useDisclosure();
     const { setSportsLeague } = useSportContext();
+    
     return (
         <Container maxW="7xl">
             <Stack
@@ -75,6 +78,7 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                             colorScheme="red"
                             bg="red.400"
                             _hover={{ bg: "red.500" }}
+                            onClick={onStatsOpen}
                         >
                             Statistics
                         </Button>
@@ -145,6 +149,19 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                     </Box>
                 </Flex>
             </Stack>
+            <Modal onClose={onStatsClose} isOpen={isStatsOpen} isCentered={true}>
+                        <ModalOverlay />
+                        <ModalContent>
+                            <ModalHeader>Statistics</ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                                <StatsPage />
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button onClick={onStatsClose}>Close</Button>
+                            </ModalFooter>
+                        </ModalContent>
+                    </Modal>
             <ErrorToast errorMsg={error} />
         </Container>
     );

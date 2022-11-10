@@ -14,12 +14,14 @@ import {
     Stack,
     useDisclosure,
     Spinner,
+    Text,
 } from "@chakra-ui/react";
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
 import { SearchBar } from "../App/SearchBar";
 import { ColorfulBackdrop } from "../Misc/ColorfulBackdrop";
 import { ErrorToast } from "../Misc/ErrorToast";
+import { GameStatsCard } from "./GameStatsCard";
 import { GuessCard } from "./GuessCard";
 import { PlayerCard } from "./PlayerCard";
 import { WinningCard } from "./WinningCard";
@@ -27,11 +29,14 @@ import { useSportContext } from "~/contexts/SportContext";
 import { usePlayerSelection } from "~/hooks/data/usePlayerSelection";
 import { useLocalStorage } from "~/hooks/useLocalStorage";
 import type { PlayerName, Player } from "~/models";
+import { mapReplacer, mapReviver } from "~/utils/mapHelpers";
 
-type StoredGuesses = {
+export type StoredGuesses = {
     date: string;
     latestGuesses: PlayerName[];
     gamesPlayed: number;
+    currentStreak: number;
+    guessDistribution: Map<number, number>;
 };
 
 export function GameBoard(): ReactElement {
@@ -42,12 +47,16 @@ export function GameBoard(): ReactElement {
     const defaultStoredGuesses: StoredGuesses = {
         date: new Date().toLocaleDateString(),
         latestGuesses: [],
-        gamesPlayed: 0
+        gamesPlayed: 0,
+        currentStreak: 0,
+        guessDistribution: new Map<number, number>()
     };
 
-    const [storedData, setStoredData] = useLocalStorage("storedData", JSON.stringify(defaultStoredGuesses));
+    const [storedData, setStoredData] = useLocalStorage("storedData", JSON.stringify(defaultStoredGuesses, mapReplacer));
     const [alreadyPlayedToday, setAlreadyPlayedToday] = useState<boolean>(false);
     const [gamesPlayed, setGamesPlayed] = useState<number>(0);
+    const [currentStreak, setCurrentStreak] = useState<number>(0);
+    const [guessDistribution, setGuessDistribution] = useState<Map<number, number>>(new Map<number, number>());
 
     const [answer, setAnswer] = useState<Player>({
         displayName: "",
@@ -84,13 +93,15 @@ export function GameBoard(): ReactElement {
     const { data, isLoading, error } = usePlayerSelection(sportsLeague.id);
 
     useEffect(() => {
-        const guessData = JSON.parse(storedData) as StoredGuesses;
+        const guessData = JSON.parse(storedData, mapReviver) as StoredGuesses;
         const today = new Date().toLocaleDateString();
         if (guessData.date === today) {
             setGuesses(guessData.latestGuesses);
             setAlreadyPlayedToday(true);
-            setGamesPlayed(guessData.gamesPlayed);
         }
+        setGamesPlayed(guessData.gamesPlayed);
+        setCurrentStreak(guessData.currentStreak);
+        setGuessDistribution(guessData.guessDistribution)
     }, [storedData]);
 
     useEffect(() => {
@@ -100,14 +111,19 @@ export function GameBoard(): ReactElement {
     }, [data]);
 
     useEffect(() => {
-        if (guesses.length > 1 && guesses[guesses.length - 1].name === answer.displayName) {
+        if (guesses.length > 0 && guesses[guesses.length - 1].name === answer.displayName) {
             onWinOpen();
             setStoredData(
                 JSON.stringify({
                     date: new Date().toLocaleDateString(),
                     latestGuesses: guesses,
-                    gamesPlayed: gamesPlayed + (alreadyPlayedToday ? 0 : 1)
-                })
+                    gamesPlayed: gamesPlayed + (alreadyPlayedToday ? 0 : 1),
+                    currentStreak: currentStreak + 1,
+                    guessDistribution: guessDistribution.set(
+                        guesses.length,
+                        guessDistribution.get(guesses.length) ?? 0 + 1
+                    )
+                }, mapReplacer)
             );
             setGuesses([]);
         } else if (guesses.length > 7) {
@@ -116,11 +132,13 @@ export function GameBoard(): ReactElement {
                 JSON.stringify({
                     date: new Date().toLocaleDateString(),
                     latestGuesses: guesses,
-                    gamesPlayed: gamesPlayed + (alreadyPlayedToday ? 0 : 1)
-                })
+                    gamesPlayed: gamesPlayed + (alreadyPlayedToday ? 0 : 1),
+                    currentStreak: 0,
+                    guessDistribution: guessDistribution
+                }, mapReplacer)
             );
         }
-    }, [guesses, answer, onWinOpen, setStoredData, gamesPlayed, alreadyPlayedToday]);
+    }, [guesses, answer, onWinOpen, setStoredData, gamesPlayed, alreadyPlayedToday, onLoseOpen, currentStreak, guessDistribution]);
 
     const onSubmit = (guess: PlayerName): void => {
         setGuesses((prev) => [...prev, guess]);
@@ -132,7 +150,7 @@ export function GameBoard(): ReactElement {
     };
 
     const goHomeLose = (): void => {
-        onWinClose();
+        onLoseClose();
         window.location.reload();
     };
 
@@ -177,6 +195,15 @@ export function GameBoard(): ReactElement {
                             <ModalCloseButton />
                             <ModalBody>
                                 <WinningCard player={answer} />
+                                <GameStatsCard
+                                    guesses={guesses}
+                                    answer={answer}
+                                    guessDistribution={
+                                        guessDistribution
+                                    }
+                                    gamesPlayed={gamesPlayed}
+                                    currentStreak={currentStreak}
+                                />
                             </ModalBody>
                             <ModalFooter>
                                 <Button onClick={goHomeWin}>Close</Button>
@@ -190,6 +217,15 @@ export function GameBoard(): ReactElement {
                             <ModalCloseButton />
                             <ModalBody>
                                 <WinningCard player={answer} />
+                                <GameStatsCard
+                                    guesses={guesses}
+                                    answer={answer}
+                                    guessDistribution={
+                                        guessDistribution
+                                    }
+                                    gamesPlayed={gamesPlayed}
+                                    currentStreak={currentStreak}
+                                />
                             </ModalBody>
                             <ModalFooter>
                                 <Button onClick={goHomeLose}>Close</Button>
@@ -200,10 +236,13 @@ export function GameBoard(): ReactElement {
                         <Heading color="red.400">{sportsLeague.league}</Heading>
                     </Center>
                     <Box position="relative" display="block">
-                        <Box position="absolute" zIndex="1" left="0" right="0">
+                        <Box position="absolute" zIndex="1" left="0" right="0" mt={8}>
                             <SearchBar submitAction={onSubmit} />
                         </Box>
-                        <Box paddingTop="150px" overflowX="auto" minWidth="full">
+                        <Text color="red.400" size="xl" fontWeight="bold">
+                            {`Guesses : ${guesses.length} / 8`}
+                        </Text>
+                        <Box paddingTop="128px" overflowX="auto" minWidth="full">
                             {guesses.map((g, i) => (
                                 <ColorfulBackdrop key={g.name} index={i}>
                                     <GuessCard guess={g} answer={answer} />
