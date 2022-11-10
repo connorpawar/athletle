@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { Text, Center, Heading, Stack, Box, SimpleGrid, Button } from "@chakra-ui/react";
+import { Text, Center, Heading, Stack, Box, SimpleGrid, Button, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from "@chakra-ui/react";
 import type { ReactElement} from "react";
 import { useState } from "react";
 import { SuccessToast } from "../Misc/SuccessToast";
@@ -42,10 +42,18 @@ export function GameStatsCard({
     return (
         <Center py={12}>
             <Stack align="left">
-                <Heading fontSize="xl" fontFamily="body" color="red.400" fontWeight={500}>
-                    Guess Distribution:
-                </Heading>
-                <SimpleGrid columns={1} spacing={2}>
+            <Accordion allowToggle>
+                <AccordionItem>
+                    <h2>
+                    <AccordionButton>
+                        <Box flex='1' textAlign='left'>
+                        Guess Distribution
+                        </Box>
+                        <AccordionIcon />
+                    </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4}>
+                    <SimpleGrid columns={1} spacing={2}>
                     <Box>
                         1 <Box bg="red.400" height="4px" width={`${guessDistribution?.get(1) ?? 0}ex`} />
                     </Box>
@@ -71,6 +79,9 @@ export function GameStatsCard({
                         8 <Box bg="red.400" height="4px" width={`${guessDistribution?.get(8) ?? 0}ex`} />
                     </Box>
                 </SimpleGrid>
+                    </AccordionPanel>
+                </AccordionItem>
+                </Accordion>
                 <Text color="red.400" size="xl" fontWeight="bold">
                     {`Current Streak : ${currentStreak} 🔥`}
                 </Text>
