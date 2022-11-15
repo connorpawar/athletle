@@ -1,54 +1,32 @@
-import { CloseIcon } from "@chakra-ui/icons";
 import type { InputProps } from "@chakra-ui/react";
-import { Badge, Box, Flex, Input, List, ListItem } from "@chakra-ui/react";
-import type { ReactElement } from "react";
+import { Box, Flex, Input, List, ListItem } from "@chakra-ui/react";
+import type FuzzySearch from "fuzzy-search";
 import { useState, useRef, forwardRef } from "react";
-import { levenshteinSorter } from "~/utils/levenshteinDistance";
 import mergeRefs from "~/utils/mergeRefs";
 
 export type Option = {
-    [key: string]: unknown;
     label: string;
     value: string;
+    obj: Record<string, unknown>;
 };
 
 export type AutocompleteProps = {
     bgHoverColor?: string;
     notFoundText?: string;
-    /** Options to be displayed in the autocomplete */
-    options: Option[];
     /** Input placeholder */
     placeholder?: string;
     limit: number;
     /** Render prop to customize the badges */
-    renderBadge?: (option: Option) => React.ReactNode;
+    itemView: (option: Option) => React.ReactNode;
     /** Result that gets populated with the selected options */
     result: Option[];
     /** Callback to set the result */
     setResult: (options: Option[]) => void;
+    searcher: FuzzySearch<Option>;
 } & InputProps;
 
-const defaultRenderBadge = (option: Option): ReactElement => (
-    <Badge borderRadius="full" px="2" colorScheme="teal" mx={1} cursor="pointer">
-        {option.label}
-        <CloseIcon ml={1} w={2} h={2} mb="4px" />
-    </Badge>
-);
-
 export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
-    (
-        {
-            options,
-            result,
-            setResult,
-            bgHoverColor,
-            notFoundText,
-            limit,
-            renderBadge = defaultRenderBadge,
-            ...rest
-        }: AutocompleteProps,
-        ref
-    ) => {
+    ({ result, setResult, bgHoverColor, notFoundText, limit, itemView, searcher, ...rest }: AutocompleteProps, ref) => {
         const [partialResult, setPartialResult] = useState<Option[]>();
         const [displayOptions, setDisplayOptions] = useState<boolean>(false);
         const [inputValue, setInputValue] = useState<string>();
@@ -56,9 +34,12 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
 
         const filterOptions = (value: string): void => {
             if (value !== "") {
-                const subset = levenshteinSorter(options, value, limit);
-                console.log(subset);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                const sorted = searcher.search(value);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                const subset = sorted.slice(0, limit);
                 setDisplayOptions(true);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 setPartialResult(subset);
                 setInputValue(value);
             } else {
@@ -84,21 +65,6 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
 
         return (
             <Box data-testid="simple-autocomplete">
-                {result.length > 0 && (
-                    <Box my={2}>
-                        {result.map((option) => (
-                            <Box
-                                display="inline-block"
-                                onClick={(): void => {
-                                    selectOption(option);
-                                }}
-                                key={option.value}
-                            >
-                                {renderBadge(option)}
-                            </Box>
-                        ))}
-                    </Box>
-                )}
                 <Input
                     onChange={(e): void => {
                         filterOptions(e.currentTarget.value);
@@ -126,12 +92,14 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                                     selectOptionFromList(option);
                                 }}
                             >
-                                <Flex align="center" textColor="white">{option.label}</Flex>
+                                {itemView(option)}
                             </ListItem>
                         ))}
-                        {partialResult?.length === undefined && (
+                        {(partialResult === undefined || partialResult.length === 0) && (
                             <ListItem my={1} p={2} data-testid="not-found">
-                                <Flex align="center">{notFoundText}</Flex>
+                                <Flex align="center" textColor="white">
+                                    {notFoundText}
+                                </Flex>
                             </ListItem>
                         )}
                     </List>
