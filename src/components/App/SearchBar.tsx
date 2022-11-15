@@ -1,4 +1,16 @@
-import { Container, useBreakpointValue } from "@chakra-ui/react";
+import {
+    Container,
+    useBreakpointValue,
+    Text,
+    Flex,
+    Table,
+    TableContainer,
+    Tbody,
+    Td,
+    Tr,
+    HStack,
+} from "@chakra-ui/react";
+import FuzzySearch from "fuzzy-search";
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
 import { ErrorToast } from "../Misc/ErrorToast";
@@ -21,9 +33,25 @@ const extractPlayerToItem = (player: PlayerName): Option => {
     const selectItem: Option = {
         value: JSON.stringify(player),
         label: player.name,
+        obj: player,
     };
 
     return selectItem;
+};
+
+const playerItemView = (option: Option): React.ReactNode => {
+    return (
+        <Flex align="center" textColor="white" direction="row">
+            <Text flex="1">
+                <>{option.obj.name}</>
+            </Text>
+            <Text>
+                <>
+                    {option.obj.teamName} - ({option.obj.position})
+                </>
+            </Text>
+        </Flex>
+    );
 };
 
 const getSelection = (selectedItems: Item[]): Item[] =>
@@ -33,7 +61,7 @@ export function SearchBar(props: SearchBarProps): ReactElement {
     const { submitAction } = props;
 
     const [result, setResult] = useState<Option[]>([]);
-    const [options, setOptions] = useState<Option[]>([]);
+    const [searcher, setSearcher] = useState<FuzzySearch<Option>>(new FuzzySearch([]));
 
     const { sportsLeague } = useSportContext();
 
@@ -54,7 +82,8 @@ export function SearchBar(props: SearchBarProps): ReactElement {
 
     useEffect(() => {
         if (allPlayers !== undefined) {
-            setOptions(allPlayers.map(extractPlayerToItem));
+            const options = allPlayers.map(extractPlayerToItem);
+            setSearcher(new FuzzySearch(options, ["obj.name", "obj.teamName", "obj.position"], { sort: true }));
         }
     }, [allPlayers, error]);
 
@@ -73,7 +102,7 @@ export function SearchBar(props: SearchBarProps): ReactElement {
         <Container>
             <ErrorToast errorMsg={error} />
             <Autocomplete
-                options={options}
+                searcher={searcher}
                 result={result}
                 setResult={(opts: Option[]): void => {
                     setResult(opts);
@@ -81,6 +110,7 @@ export function SearchBar(props: SearchBarProps): ReactElement {
                 limit={5}
                 placeholder="Guess A Player!"
                 style={{ width: barWidth }}
+                itemView={playerItemView}
             />
         </Container>
     );

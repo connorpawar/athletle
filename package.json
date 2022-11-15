@@ -29,6 +29,7 @@
         "@emotion/styled": "^11.9.3",
         "dotenv": "^16.0.2",
         "framer-motion": "^6.5.1",
+        "fuzzy-search": "^3.2.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-icons": "^4.4.0"
@@ -43,6 +44,7 @@
         "@testing-library/jest-dom": "^5.16.2",
         "@testing-library/react": "^12.1.4",
         "@testing-library/user-event": "^13.5.0",
+        "@types/fuzzy-search": "^2.1.2",
         "@types/jest": "^27.4.1",
         "@types/react": "^18.0.15",
         "@types/react-dom": "^18.0.6s",
