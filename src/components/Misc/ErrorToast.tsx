@@ -8,7 +8,7 @@ export type ErrorToastProps = {
 export function ErrorToast(props: ErrorToastProps): ReactElement {
     const { errorMsg } = props;
     const toast = useToast({
-        id: "",
+        id: errorMsg,
     });
 
     return (

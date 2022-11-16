@@ -3,10 +3,10 @@ import { Text, Center, Stack, Box, SimpleGrid, Button, Accordion, AccordionItem,
 import type { ReactElement} from "react";
 import { useState } from "react";
 import { SuccessToast } from "../Misc/SuccessToast";
+import { useSportContext } from "~/contexts/SportContext";
 import { usePlayer } from "~/hooks/data/usePlayer";
 import type { Player, PlayerName } from "~/models";
 import { copyScores } from "~/utils/copyScores";
-import { useSportContext } from "~/contexts/SportContext";
 
 export type GameStatsCardProps = {
     guesses: PlayerName[];
@@ -43,7 +43,7 @@ export function GameStatsCard({
     return (
         <Center py={12}>
             <Stack align="left">
-            <Heading color="red.400">{sportsLeague.league}</Heading>
+            <Text fontWeight="bold" color="red.400">{sportsLeague.league}</Text>
             <Accordion allowToggle={true}>
                 <AccordionItem>
                     <h2>
