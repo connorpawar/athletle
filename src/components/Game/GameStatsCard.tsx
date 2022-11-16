@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { Text, Center, Stack, Box, SimpleGrid, Button, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from "@chakra-ui/react";
+import { Text, Center, Stack, Box, SimpleGrid, Button, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Heading } from "@chakra-ui/react";
 import type { ReactElement} from "react";
 import { useState } from "react";
 import { SuccessToast } from "../Misc/SuccessToast";
+import { useSportContext } from "~/contexts/SportContext";
 import { usePlayer } from "~/hooks/data/usePlayer";
 import type { Player, PlayerName } from "~/models";
 import { copyScores } from "~/utils/copyScores";
-import { useSportContext } from "~/contexts/SportContext";
 
 export type GameStatsCardProps = {
     guesses: PlayerName[];
@@ -43,6 +43,7 @@ export function GameStatsCard({
     return (
         <Center py={12}>
             <Stack align="left">
+            <Text fontWeight="bold" color="red.400">{sportsLeague.league}</Text>
             <Accordion allowToggle={true}>
                 <AccordionItem>
                     <h2>

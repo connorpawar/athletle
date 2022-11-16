@@ -8,7 +8,7 @@ export type SuccessToastProps = {
 export function SuccessToast(props: SuccessToastProps): ReactElement {
     const { msg } = props;
     const toast = useToast({
-        id: "",
+        id: msg,
     });
 
     return (

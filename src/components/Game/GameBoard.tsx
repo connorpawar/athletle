@@ -120,7 +120,7 @@ export function GameBoard(): ReactElement {
                 JSON.stringify(
                     {
                         date: new Date().toLocaleDateString(),
-                        latestAnswerId: answer.id,
+                        latestPlayerId: answer.id,
                         leagueId: sportsLeague.id,
                         latestGuesses: guesses,
                         gamesPlayed: gamesPlayed + (alreadyPlayedToday ? 0 : 1),
@@ -139,6 +139,8 @@ export function GameBoard(): ReactElement {
                 JSON.stringify(
                     {
                         date: new Date().toLocaleDateString(),
+                        latestPlayerId: answer.id,
+                        leagueId: sportsLeague.id,
                         latestGuesses: guesses,
                         gamesPlayed: gamesPlayed + (alreadyPlayedToday ? 0 : 1),
                         currentStreak: 0,
@@ -189,12 +191,11 @@ export function GameBoard(): ReactElement {
             <Stack
                 align="center"
                 spacing={{ base: 8, md: 10 }}
-                py={{ base: 20, md: 28 }}
                 direction={{ base: "column", md: "row" }}
             >
-                <Stack flex={1} spacing={{ base: 5, md: 10 }}>
+                <Stack flex={1} spacing={{ base: 2, md: 5 }}>
                     <ErrorToast errorMsg={error} />
-                    <Button maxW="sm" onClick={onOpen}>
+                    <Button mt="4" maxW="sm" onClick={onOpen}>
                         View Silhouette
                     </Button>
                     <Modal onClose={onClose} isOpen={isOpen} isCentered={true}>
@@ -254,8 +255,8 @@ export function GameBoard(): ReactElement {
                             </ModalFooter>
                         </ModalContent>
                     </Modal>
-                    <Center mb="12em">
-                        <Heading color="red.400">{sportsLeague.league}</Heading>
+                    <Center>
+                        <Heading size="lg" color="red.400">{sportsLeague.league}</Heading>
                     </Center>
                     <Box position="relative" display="block">
                         <Box position="absolute" zIndex="1" left="0" right="0" mt={8}>

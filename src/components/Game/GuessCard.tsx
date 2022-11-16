@@ -52,8 +52,8 @@ export function GuessCard({ guess, answer }: GuessCardProps): ReactElement {
     return (
         <>
             <ErrorToast errorMsg={error} />
-            <Box px={{ base: 4, sm: 6, md: 12 }} pb="3">
-                <Heading size="lg" color="red.400" mt="3">{data.displayName}</Heading>
+            <Box px={{ base: 4, sm: 6, md: 12 }} mb="4">
+                <Heading size="sm" color="red.400">{data.displayName}</Heading>
                 <SimpleGrid columns={7} spacing={{ base: 2, lg: 6 }}>
                     <StatsCard
                         title="Team"
@@ -112,8 +112,8 @@ function StatsCard(props: StatsCardProps): ReactElement {
     const height = useBreakpointValue(
         {
             base: "10vh",
-            sm: "10vh",
-            md: "8vh",
+            sm: "8vh",
+            md: "6vh"
         }
     );
     const width = useBreakpointValue(

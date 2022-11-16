@@ -10,7 +10,8 @@ export const copyScores = async (guesses: Player[], answer: Player, leagueName: 
     try {
         await navigator.clipboard.writeText(text);
         console.log(text);
-        setToastText("Copied your score!")
+        setToastText("Copied your score!");
+        setToastText("");
       } catch(err) {
           console.error(err);
       }
