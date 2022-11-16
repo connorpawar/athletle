@@ -70,6 +70,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                         filterOptions(e.currentTarget.value);
                     }}
                     ref={mergeRefs([inputRef, ref])}
+                    background="white"
                     {...rest}
                 />
                 {displayOptions && (

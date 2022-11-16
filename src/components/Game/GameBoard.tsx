@@ -149,7 +149,6 @@ export function GameBoard(): ReactElement {
                     mapReplacer
                 )
             );
-            setAlreadyPlayedToday(true);
         }
     }, [
         guesses,
@@ -256,7 +255,7 @@ export function GameBoard(): ReactElement {
                         </ModalContent>
                     </Modal>
                     <Center>
-                        <Heading size="lg" color="red.400">{sportsLeague.league}</Heading>
+                        <Heading size="md" color="red.400">{sportsLeague.league}</Heading>
                     </Center>
                     <Box position="relative" display="block">
                         <Box position="absolute" zIndex="1" left="0" right="0" mt={8}>
@@ -265,7 +264,7 @@ export function GameBoard(): ReactElement {
                         <Text color="red.400" size="xl" fontWeight="bold">
                             {`Guesses : ${guesses.length} / 8`}
                         </Text>
-                        <Box paddingTop="96px" minWidth="full">
+                        <Box pt="96px" minWidth="full">
                             {guesses.map((g, i) => (
                                 <ColorfulBackdrop key={g.name} index={i}>
                                     <GuessCard guess={g} answer={answer} />

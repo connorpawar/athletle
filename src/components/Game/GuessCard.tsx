@@ -111,24 +111,38 @@ function StatsCard(props: StatsCardProps): ReactElement {
 
     const height = useBreakpointValue(
         {
-            base: "10vh",
-            sm: "8vh",
-            md: "6vh"
+            base: "3.5rem"
         }
     );
     const width = useBreakpointValue(
         {
-            base: "13vw",
-            sm: "13vw",
-            md: "8vw",
+            base: "3rem",
+            sm: "4rem",
+            md: "8rem",
+            lg: "10rem"
         }
     );
+    const fontSize = useBreakpointValue(
+        {
+            base: "0.7rem",
+            sm: "0.8rem",
+            md: "0.9rem"
+        }
+    );
+    const labelFontSize = useBreakpointValue(
+        {
+            base: "0.6rem",
+            sm: "0.7rem",
+            md: "0.8rem"
+        }
+    );
+
 
     const bgColor = color === "None" ? "white" : color === "Yellow" ? "yellow.400" : "green.400";
 
     return (
         <Stat
-            py="2"
+            py="1"
             border="1px solid"
             borderColor={useColorModeValue("gray.800", "gray.500")}
             rounded="lg"
@@ -138,8 +152,8 @@ function StatsCard(props: StatsCardProps): ReactElement {
         >
             <Flex justifyContent="space-around">
                 <Box px={{ base: 0, md: 2 }}>
-                    <StatLabel fontWeight="light">{title}</StatLabel>
-                    <StatNumber fontSize="1.5vh" fontWeight="medium" wordBreak="break-word">
+                    <StatLabel fontSize={labelFontSize} fontWeight="light">{title}</StatLabel>
+                    <StatNumber fontSize={fontSize} fontWeight="medium" wordBreak="break-word">
                         {stat}
                     </StatNumber>
                 </Box>

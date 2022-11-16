@@ -41,7 +41,7 @@ export function GameStatsCard({
     const fullPlayerData = [d1, d2, d3, d4, d5, d6, d7, d8].map(d => d.data).filter(data => data !== undefined);
 
     return (
-        <Center py={12}>
+        <Center>
             <Stack align="left">
             <Text fontWeight="bold" color="red.400">{sportsLeague.league}</Text>
             <Accordion allowToggle={true}>
