@@ -9,11 +9,10 @@ export type WinningCardProps = {
 
 export function WinningCard({ player }: WinningCardProps): ReactElement {
     return (
-        <Center py={12}>
+        <Center py={6}>
             <Box
                 role="group"
-                p={6}
-                maxW="330px"
+                maxW="250px"
                 w="full"
                 bg={useColorModeValue("white", "gray.800")}
                 boxShadow="2xl"
@@ -39,7 +38,7 @@ export function WinningCard({ player }: WinningCardProps): ReactElement {
                         zIndex: -1,
                     }}
                 >
-                    <Silhouette height={230} width={282} objectFit="contain" src={player.headshot} showOriginal={true} />
+                    <Silhouette height={192} width={282} objectFit="contain" src={player.headshot} showOriginal={true} />
                 </Box>
                 <Stack align="center">
                     <Heading fontSize="2xl" fontFamily="body" fontWeight={500}>

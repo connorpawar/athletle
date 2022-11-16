@@ -1,6 +1,17 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import type { IconProps} from "@chakra-ui/react";
-import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure ,
+import type {
+    IconProps
+} from "@chakra-ui/react";
+import {
+    Skeleton,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    useDisclosure,
     Container,
     Stack,
     Flex,
@@ -16,7 +27,6 @@ import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHea
     MenuButton,
     MenuItem,
     MenuList,
-    SkeletonCircle,
 } from "@chakra-ui/react";
 import type { ReactElement } from "react";
 import { ErrorToast } from "../Misc/ErrorToast";
@@ -32,8 +42,8 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
     const displayImage = useBreakpointValue({ base: true, md: false });
     const { data: leagues, isLoading, error } = useAllLeagues();
     const { isOpen: isStatsOpen, onOpen: onStatsOpen, onClose: onStatsClose } = useDisclosure();
-    const { setSportsLeague } = useSportContext();
-    
+    const { sportsLeague, setSportsLeague } = useSportContext();
+
     return (
         <Container maxW="7xl">
             <Stack
@@ -70,19 +80,35 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                         labore et dolore magna aliqua. Amet consectetur adipiscing elit ut aliquam.
                     </Text>
                     <Stack spacing={{ base: 4, sm: 6 }} direction={{ base: "column", sm: "row" }}>
-                        <Button
-                            rounded="full"
-                            size="lg"
-                            fontWeight="normal"
-                            px={6}
-                            colorScheme="red"
-                            bg="red.400"
-                            _hover={{ bg: "red.500" }}
-                            onClick={onStatsOpen}
-                        >
-                            Statistics
-                        </Button>
-                        <SkeletonCircle isLoaded={!isLoading}>
+                        <Skeleton size="lg" isLoaded={!isLoading} startColor="grey.400" endColor="red.400">
+                            <Button
+                                rounded="full"
+                                size="lg"
+                                fontWeight="normal"
+                                px={6}
+                                colorScheme="red"
+                                bg="red.400"
+                                _hover={{ bg: "red.500" }}
+                                onClick={onButtonClick}
+                            >
+                                Play
+                            </Button>
+                        </Skeleton>
+                        <Skeleton size="lg" isLoaded={!isLoading} startColor="grey.400" endColor="red.400">
+                            <Button
+                                rounded="full"
+                                size="lg"
+                                fontWeight="normal"
+                                px={6}
+                                colorScheme="red"
+                                bg="red.400"
+                                _hover={{ bg: "red.500" }}
+                                onClick={onStatsOpen}
+                            >
+                                Statistics
+                            </Button>
+                        </Skeleton>
+                        <Skeleton size="lg" isLoaded={!isLoading} startColor="grey.400" endColor="red.400">
                             <Menu>
                                 {({ isOpen }): ReactElement => (
                                     <>
@@ -95,7 +121,7 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                                             as={Button}
                                             rightIcon={<ChevronDownIcon />}
                                         >
-                                            {isOpen ? "Close" : "Choose A League"}
+                                            {isOpen ? "Close" : sportsLeague.league}
                                         </MenuButton>
                                         <MenuList>
                                             {leagues?.map((lg) => (
@@ -107,7 +133,6 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                                                             sport: lg.sport,
                                                             league: lg.name,
                                                         });
-                                                        onButtonClick();
                                                     }}
                                                 >
                                                     {lg.name}
@@ -117,7 +142,7 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                                     </>
                                 )}
                             </Menu>
-                        </SkeletonCircle>
+                        </Skeleton>
                     </Stack>
                 </Stack>
                 <Flex
@@ -150,18 +175,18 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                 </Flex>
             </Stack>
             <Modal onClose={onStatsClose} isOpen={isStatsOpen} isCentered={true}>
-                        <ModalOverlay />
-                        <ModalContent>
-                            <ModalHeader>Statistics</ModalHeader>
-                            <ModalCloseButton />
-                            <ModalBody>
-                                <StatsPage />
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button onClick={onStatsClose}>Close</Button>
-                            </ModalFooter>
-                        </ModalContent>
-                    </Modal>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Statistics</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <StatsPage />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button onClick={onStatsClose}>Close</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
             <ErrorToast errorMsg={error} />
         </Container>
     );

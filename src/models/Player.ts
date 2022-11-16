@@ -2,6 +2,7 @@ import type { Position } from "./Position";
 import type { Team } from "./Team";
 
 export type Player = {
+    id: string;
     displayName: string;
     headshot: string;
     jersey: string;

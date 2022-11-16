@@ -52,7 +52,7 @@ export function GuessCard({ guess, answer }: GuessCardProps): ReactElement {
     return (
         <>
             <ErrorToast errorMsg={error} />
-            <Box px={{ base: 0, sm: 6, md: 12 }}>
+            <Box px={{ base: 4, sm: 6, md: 12 }} pb="3">
                 <Heading size="lg" color="red.400" mt="3">{data.displayName}</Heading>
                 <SimpleGrid columns={7} spacing={{ base: 2, lg: 6 }}>
                     <StatsCard
@@ -118,17 +118,16 @@ function StatsCard(props: StatsCardProps): ReactElement {
     );
     const width = useBreakpointValue(
         {
-            base: "10vw",
-            sm: "10vw",
+            base: "13vw",
+            sm: "13vw",
             md: "8vw",
         }
     );
 
-    const bgColor = color === "None" ? undefined : color === "Yellow" ? "yellow.400" : "green.400";
+    const bgColor = color === "None" ? "white" : color === "Yellow" ? "yellow.400" : "green.400";
 
     return (
         <Stat
-            px={{ base: 1, md: 2 }}
             py="2"
             border="1px solid"
             borderColor={useColorModeValue("gray.800", "gray.500")}
@@ -138,7 +137,7 @@ function StatsCard(props: StatsCardProps): ReactElement {
             height={height}
         >
             <Flex justifyContent="space-around">
-                <Box pl={{ base: 1, md: 2 }}>
+                <Box px={{ base: 0, md: 2 }}>
                     <StatLabel fontWeight="light">{title}</StatLabel>
                     <StatNumber fontSize="1.5vh" fontWeight="medium" wordBreak="break-word">
                         {stat}
