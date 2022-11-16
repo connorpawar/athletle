@@ -21,8 +21,6 @@ export function ColorfulBackdrop(props: ColorfulBackdropProps): ReactElement {
             boxShadow="lg"
             direction={{ base: "column-reverse", md: "row" }}
             width="full"
-            rounded="sm"
-            p={0}
             justifyContent="space-between"
             position="relative"
             bg={useColorModeValue("white", "gray.800")}
