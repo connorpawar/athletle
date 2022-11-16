@@ -6,6 +6,7 @@ import { SuccessToast } from "../Misc/SuccessToast";
 import { usePlayer } from "~/hooks/data/usePlayer";
 import type { Player, PlayerName } from "~/models";
 import { copyScores } from "~/utils/copyScores";
+import { useSportContext } from "~/contexts/SportContext";
 
 export type GameStatsCardProps = {
     guesses: PlayerName[];
@@ -23,7 +24,7 @@ export function GameStatsCard({
     currentStreak,
     guessDistribution,
 }: GameStatsCardProps): ReactElement {
-    
+    const {sportsLeague} = useSportContext();
     const [toastText, setToastText] = useState<string>("");
 
     const [g1, g2, g3, g4, g5, g6, g7, g8] = guesses;
@@ -91,7 +92,7 @@ export function GameStatsCard({
                 {answer !== undefined && (
                     <Button
                         mt="24"
-                        onClick={(): unknown => copyScores(fullPlayerData as Player[], answer, setToastText)}>
+                        onClick={(): unknown => copyScores(fullPlayerData as Player[], answer, sportsLeague.league, setToastText)}>
                         Share Your Score!
                     </Button>)}
                     <br />

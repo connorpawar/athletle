@@ -1,11 +1,11 @@
 import { guessProximity } from "./guessProximity";
 import type { Player } from "~/models";
 
-export const copyScores = async (guesses: Player[], answer: Player, setToastText: (s: string) => void): Promise<void> => {
+export const copyScores = async (guesses: Player[], answer: Player, leagueName: string, setToastText: (s: string) => void): Promise<void> => {
 
     const colors = guesses.map((g) => guessProximity(g, answer));
 
-    const text = `Athletle ${new Date().toLocaleDateString()}\n${"".concat(...colors.map((c) => `${c.asEmoji}\n`))}`;
+    const text = `https://athletle.netlify.app\n${new Date().toLocaleDateString()}\n${leagueName}\n${"".concat(...colors.map((c) => `${c.asEmoji}\n`))}`;
     
     try {
         await navigator.clipboard.writeText(text);
