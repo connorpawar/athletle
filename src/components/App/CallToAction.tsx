@@ -1,7 +1,5 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import type {
-    IconProps
-} from "@chakra-ui/react";
+import type { IconProps } from "@chakra-ui/react";
 import {
     Skeleton,
     Modal,
@@ -76,8 +74,9 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                         </Text>
                     </Heading>
                     <Text color="gray.500">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Amet consectetur adipiscing elit ut aliquam.
+                        Welcome to Athletle, the only place to find a daily athlete based guessing game for all of your
+                        favorite sporting leagues. Whether you're a rookie or a pro, Athletle is designed to give all
+                        fans a way to compete with each other in any league they choose to see who is MVP.
                     </Text>
                     <Stack spacing={{ base: 4, sm: 6 }} direction={{ base: "column", sm: "row" }}>
                         <Skeleton size="lg" isLoaded={!isLoading} startColor="grey.400" endColor="red.400">
