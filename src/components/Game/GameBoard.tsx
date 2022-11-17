@@ -190,7 +190,7 @@ export function GameBoard(): ReactElement {
             <Stack
                 align="center"
                 spacing={{ base: 8, md: 10 }}
-                direction={{ base: "column", md: "row" }}
+                direction="column"
             >
                 <Stack flex={1} spacing={{ base: 2, md: 5 }}>
                     <ErrorToast errorMsg={error} />
