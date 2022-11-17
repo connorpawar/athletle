@@ -1,15 +1,4 @@
-import {
-    Container,
-    useBreakpointValue,
-    Text,
-    Flex,
-    Table,
-    TableContainer,
-    Tbody,
-    Td,
-    Tr,
-    HStack,
-} from "@chakra-ui/react";
+import { Container, useBreakpointValue, Text, Flex } from "@chakra-ui/react";
 import FuzzySearch from "fuzzy-search";
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
@@ -33,7 +22,10 @@ const extractPlayerToItem = (player: PlayerName): Option => {
     const selectItem: Option = {
         value: JSON.stringify(player),
         label: player.name,
-        obj: player,
+        obj: {
+            ...player,
+            combined: [player.name, player.teamName, player.position, player.teamName, player.name].join(" "),
+        },
     };
 
     return selectItem;
@@ -83,7 +75,9 @@ export function SearchBar(props: SearchBarProps): ReactElement {
     useEffect(() => {
         if (allPlayers !== undefined) {
             const options = allPlayers.map(extractPlayerToItem);
-            setSearcher(new FuzzySearch(options, ["obj.name", "obj.teamName", "obj.position"], { sort: true }));
+            setSearcher(
+                new FuzzySearch(options, ["obj.name", "obj.teamName", "obj.position", "obj.combined"], { sort: true })
+            );
         }
     }, [allPlayers, error]);
 
