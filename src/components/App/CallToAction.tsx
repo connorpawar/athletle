@@ -27,6 +27,7 @@ import {
     MenuList,
 } from "@chakra-ui/react";
 import type { ReactElement } from "react";
+import { useEffect } from "react";
 import { ErrorToast } from "../Misc/ErrorToast";
 import { StatsPage } from "../Misc/StatsPage";
 import { useSportContext } from "~/contexts/SportContext";
@@ -41,6 +42,13 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
     const { data: leagues, isLoading, error } = useAllLeagues();
     const { isOpen: isStatsOpen, onOpen: onStatsOpen, onClose: onStatsClose } = useDisclosure();
     const { sportsLeague, setSportsLeague } = useSportContext();
+
+    useEffect(() => {
+        if (leagues !== undefined && leagues.length > 0) {
+            const league = leagues[0];
+            setSportsLeague({ id: league.id, sport: league.sport, league: league.name });
+        }
+    }, [leagues, error, setSportsLeague]);
 
     return (
         <Container maxW="7xl">
