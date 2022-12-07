@@ -159,7 +159,7 @@ export function GameBoard(): ReactElement {
             onWinOpen();
             const played = gamesPlayed + (alreadyPlayedToday ? 0 : 1);
             const streak = currentStreak + (alreadyPlayedToday ? 0 : 1);
-            const dist = guessDistribution.set(guesses.length, guessDistribution.get(guesses.length) ?? 0 + 1);
+            const dist = alreadyPlayedToday ? guessDistribution : guessDistribution.set(guesses.length, guessDistribution.get(guesses.length) ?? 0 + 1);
             setHistoricalData(
                 JSON.stringify(
                     {
@@ -171,6 +171,9 @@ export function GameBoard(): ReactElement {
                     mapReplacer
                 )
             );
+            setGamesPlayed(played);
+            setCurrentStreak(streak);
+            setGuessDistribution(dist);
             setAlreadyPlayedToday(true);
         } else if (guesses.length > 7) {
             complete = true;
