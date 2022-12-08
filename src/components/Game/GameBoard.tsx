@@ -236,10 +236,10 @@ export function GameBoard(): ReactElement {
     const barWidth = useBreakpointValue(
         {
             base: "xs",
-            sm: "xs",
-            md: "sm",
-            lg: "lg",
-            xl: "xl",
+            sm: "md",
+            md: "2xl",
+            lg: "4xl",
+            xl: "6xl",
         },
         {
             fallback: "sm",
