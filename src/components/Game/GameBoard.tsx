@@ -91,6 +91,8 @@ export function GameBoard(): ReactElement {
     const [guessDistribution, setGuessDistribution] = useState<Map<number, number>>(new Map<number, number>());
     const [init, setInit] = useState(false);
     const [initHist, setInitHist] = useState(false);
+    const [initModalOpened, setInitModalOpened] = useState(false);
+    const [result, setResult] = useState(false);
 
     const [answer, setAnswer] = useState<Player>({
         id: "",
@@ -156,10 +158,17 @@ export function GameBoard(): ReactElement {
         let complete = false;
         if (guesses.length > 0 && guesses[guesses.length - 1].name === answer.displayName) {
             complete = true;
-            onWinOpen();
+            if (!initModalOpened) {
+                onWinOpen();
+                setResult(true);
+                setInitModalOpened(true);
+            }
+
             const played = gamesPlayed + (alreadyPlayedToday ? 0 : 1);
             const streak = currentStreak + (alreadyPlayedToday ? 0 : 1);
-            const dist = alreadyPlayedToday ? guessDistribution : guessDistribution.set(guesses.length, guessDistribution.get(guesses.length) ?? 0 + 1);
+            const dist = alreadyPlayedToday
+                ? guessDistribution
+                : guessDistribution.set(guesses.length, guessDistribution.get(guesses.length) ?? 0 + 1);
             setHistoricalData(
                 JSON.stringify(
                     {
@@ -177,7 +186,12 @@ export function GameBoard(): ReactElement {
             setAlreadyPlayedToday(true);
         } else if (guesses.length > 7) {
             complete = true;
-            onLoseOpen();
+            if (!initModalOpened) {
+                onLoseOpen();
+                setResult(false);
+                setInitModalOpened(true);
+            }
+
             const played = gamesPlayed + (alreadyPlayedToday ? 0 : 1);
             setHistoricalData(
                 JSON.stringify(
@@ -217,6 +231,7 @@ export function GameBoard(): ReactElement {
         guessDistribution,
         sportsLeague.id,
         setHistoricalData,
+        initModalOpened,
     ]);
 
     const onSubmit = (guess: PlayerName): void => {
@@ -225,13 +240,15 @@ export function GameBoard(): ReactElement {
 
     const goHomeWin = (): void => {
         onWinClose();
-        window.location.reload();
     };
 
     const goHomeLose = (): void => {
         onLoseClose();
-        window.location.reload();
     };
+
+    const onNavHome = (): void => {
+        window.location.reload();
+    }
 
     const barWidth = useBreakpointValue(
         {
@@ -259,9 +276,14 @@ export function GameBoard(): ReactElement {
             <Stack align="center" spacing={{ base: 8, md: 10 }} direction="column">
                 <Stack flex={1} spacing={{ base: 2, md: 5 }}>
                     <ErrorToast errorMsg={error} />
-                    <Button mt="4" maxW="sm" onClick={onOpen}>
-                        View Silhouette
+                    <Box mt="4" maxW="xs">
+                    <Button onClick={onNavHome} mr="16">
+                        Go Home
                     </Button>
+                    <Button onClick={initModalOpened ? result ? onWinOpen : onLoseOpen : onOpen}>
+                        {initModalOpened ? "View Statistics" : "View Silhouette"}
+                    </Button>
+                    </Box>
                     <Modal onClose={onClose} isOpen={isOpen} isCentered={true}>
                         <ModalOverlay />
                         <ModalContent>
