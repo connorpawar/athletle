@@ -8,6 +8,7 @@ import {
     useColorModeValue,
     useBreakpointValue,
     Heading,
+    SlideFade,
 } from "@chakra-ui/react";
 import type { ReactElement, ReactNode } from "react";
 import {
@@ -57,6 +58,7 @@ export function GuessCard({ guess, answer }: GuessCardProps): ReactElement {
         <>
             <ErrorToast errorMsg={error} />
             <Box px={{ base: 4, sm: 6, md: 12 }} mb="4">
+                <SlideFade in={true} style={{ zIndex: 10 }}>
                 <Heading size="sm" color="red.400">
                     {data.displayName}
                 </Heading>
@@ -111,6 +113,7 @@ export function GuessCard({ guess, answer }: GuessCardProps): ReactElement {
                         arrow={arrows[6]}
                     />
                 </SimpleGrid>
+                </SlideFade>
             </Box>
         </>
     );
@@ -135,14 +138,14 @@ function StatsCard(props: StatsCardProps): ReactElement {
         lg: "8rem",
     });
     const fontSize = useBreakpointValue({
-        base: "0.7rem",
-        sm: "0.8rem",
-        md: "0.9rem",
-    });
-    const labelFontSize = useBreakpointValue({
         base: "0.6rem",
         sm: "0.7rem",
         md: "0.8rem",
+    });
+    const labelFontSize = useBreakpointValue({
+        base: "0.5rem",
+        sm: "0.6rem",
+        md: "0.7rem",
     });
 
     const bgColor = color === "None" ? "white" : color === "Yellow" ? "yellow.400" : "green.400";
@@ -158,7 +161,7 @@ function StatsCard(props: StatsCardProps): ReactElement {
         >
             <Flex justifyContent="space-around">
                 <Box px={{ base: 0, md: 2 }}>
-                    <StatLabel fontSize={labelFontSize} fontWeight="light">
+                    <StatLabel fontSize={labelFontSize} fontWeight="light" wordBreak="break-word">
                         {title}
                     </StatLabel>
                     <StatNumber fontSize={fontSize} fontWeight="medium" wordBreak="break-word">
