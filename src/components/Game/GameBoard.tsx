@@ -276,11 +276,11 @@ export function GameBoard(): ReactElement {
             <Stack align="center" spacing={{ base: 8, md: 10 }} direction="column">
                 <Stack flex={1} spacing={{ base: 2, md: 5 }}>
                     <ErrorToast errorMsg={error} />
-                    <Box mt="4" maxW="xs">
-                    <Button onClick={onNavHome} mr="16">
+                    <Box mt="4" maxW="sm">
+                    <Button onClick={onNavHome} ml="4" mr="12">
                         Go Home
                     </Button>
-                    <Button onClick={initModalOpened ? result ? onWinOpen : onLoseOpen : onOpen}>
+                    <Button alignContent="flex-end" onClick={initModalOpened ? result ? onWinOpen : onLoseOpen : onOpen}>
                         {initModalOpened ? "View Statistics" : "View Silhouette"}
                     </Button>
                     </Box>
@@ -345,9 +345,9 @@ export function GameBoard(): ReactElement {
                     <Box position="relative" display="block">
                         <Box width={barWidth} />
                         <Box position="absolute" zIndex="1" left="0" right="0" mt={8}>
-                            <SearchBar submitAction={onSubmit} />
+                            <SearchBar submitAction={onSubmit} disabled={initModalOpened} />
                         </Box>
-                        <Text color="red.400" size="xl" fontWeight="bold">
+                        <Text ml="4" color="red.400" size="xl" fontWeight="bold">
                             {`Guesses : ${guesses.length} / 8`}
                         </Text>
                         <Box pt="96px" minWidth="full">

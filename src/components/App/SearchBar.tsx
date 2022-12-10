@@ -11,6 +11,7 @@ import type { PlayerName } from "~/models/PlayerName";
 
 type SearchBarProps = {
     submitAction: (player: PlayerName) => void;
+    disabled: boolean;
 };
 
 export type Item = {
@@ -50,7 +51,7 @@ const getSelection = (selectedItems: Item[]): Item[] =>
     selectedItems.length > 0 ? selectedItems.slice(selectedItems.length - 1) : [];
 
 export function SearchBar(props: SearchBarProps): ReactElement {
-    const { submitAction } = props;
+    const { submitAction, disabled } = props;
 
     const [result, setResult] = useState<Option[]>([]);
     const [searcher, setSearcher] = useState<FuzzySearch<Option>>(new FuzzySearch([]));
@@ -105,6 +106,7 @@ export function SearchBar(props: SearchBarProps): ReactElement {
                 placeholder="Guess A Player!"
                 style={{ width: barWidth }}
                 itemView={playerItemView}
+                isDisabled={disabled}
             />
         </Container>
     );
