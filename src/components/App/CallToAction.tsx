@@ -59,10 +59,11 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                 direction={{ base: "column", md: "row" }}
             >
                 <Stack flex={1} spacing={{ base: 5, md: 10 }}>
-                    <Heading lineHeight={1.1} fontWeight={600} fontSize={{ base: "3xl", sm: "4xl", lg: "6xl" }}>
+                    <Heading lineHeight={1.1} fontWeight={600}>
                         <Text
                             as="span"
                             position="relative"
+                            fontSize={{ base: "5xl", sm: "6xl", lg: "7xl" }}
                             _after={{
                                 content: "''",
                                 width: "full",
@@ -77,12 +78,16 @@ export function CallToAction({ onButtonClick }: CallToActionProps): ReactElement
                             Athletle
                         </Text>
                         <br />
-                        <Text as="span" color="red.400">
+                        <Text
+                            as="span"
+                            color="red.400"
+                            fontSize={{ base: "3xl", sm: "4xl", lg: "5xl" }}
+                        >
                             The premier athlete guessing game
                         </Text>
                     </Heading>
                     <Text color="gray.500">
-                        Welcome to Athletle, the only place to find a daily athlete based guessing game for all of your
+                        Welcome to Athletle, the only place to find a daily athlete-based guessing game for all of your
                         favorite sporting leagues. Whether you're a rookie or a pro, Athletle is designed to give all
                         fans a way to compete with each other in any league they choose to see who is MVP.
                     </Text>

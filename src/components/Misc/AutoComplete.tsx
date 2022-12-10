@@ -34,12 +34,9 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
 
         const filterOptions = (value: string): void => {
             if (value !== "") {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                 const sorted = searcher.search(value);
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                 const subset = sorted.slice(0, limit);
                 setDisplayOptions(true);
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 setPartialResult(subset);
                 setInputValue(value);
             } else {
