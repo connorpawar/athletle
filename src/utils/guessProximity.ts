@@ -47,11 +47,12 @@ export const guessProximity: GuessProximity = (guess, answer) => {
         team = "Green";
     }
 
+    const conferenceGuess = guess.team.group.parent?.name ?? guess.team.group.name.slice(0, 3);
+    const conferenceAnswer = guess.team.group.parent?.name ?? guess.team.group.name.slice(0, 3);
+
     if (guess.team.group.name === answer.team.group.name) {
         conference = "Green";
-    }
-    // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
-    else if (guess.team.group.name.slice(0, 3) === answer.team.group.name.slice(0, 3)) {
+    } else if (conferenceGuess === conferenceAnswer) {
         conference = "Yellow";
     }
 
@@ -64,8 +65,13 @@ export const guessProximity: GuessProximity = (guess, answer) => {
 		arrows[2] = guessJerseyNum > answerJerseyNum ? "Down" : "Up";
 	}
 
+    const positionGroupGuess = guess.team.group.parent?.name ?? guess.team.group.name.slice(0, 3);
+    const positionGroupAnswer = guess.team.group.parent?.name ?? guess.team.group.name.slice(0, 3);
+
     if (guess.position.displayName === answer.position.displayName) {
         position = "Green";
+    } else if (positionGroupGuess === positionGroupAnswer) {
+        position = "Yellow";
     }
 
     if (guess.height === answer.height) {
