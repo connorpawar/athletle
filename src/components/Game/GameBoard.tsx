@@ -120,7 +120,7 @@ export function GameBoard(): ReactElement {
             name: "",
             displayName: "",
             abbreviation: "",
-            parentId: null,
+            parent: null,
         },
     });
     const [guesses, setGuesses] = useState<PlayerName[]>([]);
