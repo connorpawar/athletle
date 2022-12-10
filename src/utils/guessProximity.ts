@@ -48,7 +48,7 @@ export const guessProximity: GuessProximity = (guess, answer) => {
     }
 
     const conferenceGuess = guess.team.group.parent?.name ?? guess.team.group.name.slice(0, 3);
-    const conferenceAnswer = guess.team.group.parent?.name ?? guess.team.group.name.slice(0, 3);
+    const conferenceAnswer = answer.team.group.parent?.name ?? answer.team.group.name.slice(0, 3);
 
     if (guess.team.group.name === answer.team.group.name) {
         conference = "Green";
@@ -65,8 +65,8 @@ export const guessProximity: GuessProximity = (guess, answer) => {
 		arrows[2] = guessJerseyNum > answerJerseyNum ? "Down" : "Up";
 	}
 
-    const positionGroupGuess = guess.team.group.parent?.name ?? guess.team.group.name.slice(0, 3);
-    const positionGroupAnswer = guess.team.group.parent?.name ?? guess.team.group.name.slice(0, 3);
+    const positionGroupGuess = guess.position.parent?.name ?? "guess";
+    const positionGroupAnswer = answer.position.parent?.name ?? "answer";
 
     if (guess.position.displayName === answer.position.displayName) {
         position = "Green";
