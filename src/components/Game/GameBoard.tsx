@@ -21,7 +21,6 @@ import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
 import { SearchBar } from "../App/SearchBar";
 import { ColorfulBackdrop } from "../Misc/ColorfulBackdrop";
-import { ErrorToast } from "../Misc/ErrorToast";
 import { GameStatsCard } from "./GameStatsCard";
 import { GuessCard } from "./GuessCard";
 import { PlayerCard } from "./PlayerCard";
@@ -29,8 +28,9 @@ import { WinningCard } from "./WinningCard";
 import { useSportContext } from "~/contexts/SportContext";
 import { usePlayerSelection } from "~/hooks/data/usePlayerSelection";
 import { useLocalStorage } from "~/hooks/useLocalStorage";
-import type { PlayerName, Player } from "~/models";
+import { type PlayerName, type Player, defaultPlayer } from "~/models";
 import { mapReplacer, mapReviver } from "~/utils/mapHelpers";
+import { getUTCDateString } from "~/utils/getUTCDateString";
 
 export type StoredGuesses = {
     date: string;
@@ -45,15 +45,6 @@ export type HistoricalData = {
     gamesPlayed: number;
     currentStreak: number;
     guessDistribution: Map<number, number>;
-};
-
-const getUTCDateString = (): string => {
-    const date = new Date();
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1;
-    const year = date.getUTCFullYear();
-
-    return `${day}/${month}/${year}`;
 };
 
 export function GameBoard(): ReactElement {
@@ -93,40 +84,12 @@ export function GameBoard(): ReactElement {
     const [initHist, setInitHist] = useState(false);
     const [initModalOpened, setInitModalOpened] = useState(false);
     const [result, setResult] = useState(false);
-
-    const [answer, setAnswer] = useState<Player>({
-        id: "",
-        displayName: "",
-        headshot: "",
-        jersey: "",
-        height: 0,
-        weight: 0,
-        dateOfBirth: new Date(),
-        debutYear: 0,
-        team: {
-            displayName: "",
-            shortDisplayName: "",
-            logo: "",
-            abbreviation: "",
-            group: {
-                isConference: true,
-                name: "",
-                logo: "",
-                abbreviation: "",
-                parent: null,
-            },
-        },
-        position: {
-            name: "",
-            displayName: "",
-            abbreviation: "",
-            parent: null,
-        },
-    });
+    const [answer, setAnswer] = useState<Player>(defaultPlayer);
     const [guesses, setGuesses] = useState<PlayerName[]>([]);
 
     const { data, isLoading, error } = usePlayerSelection(sportsLeague.id);
 
+    // Initialize Stored Guesses from latest session
     useEffect(() => {
         if (!init) {
             const guessData = JSON.parse(storedData, mapReviver) as StoredGuesses;
@@ -138,6 +101,7 @@ export function GameBoard(): ReactElement {
         setInit(true);
     }, [storedData, init, setInit]);
 
+    // Initialize Historical Game Data for statistics
     useEffect(() => {
         if (!initHist) {
             const histData = JSON.parse(historicalData, mapReviver) as HistoricalData;
@@ -275,7 +239,6 @@ export function GameBoard(): ReactElement {
         <Container maxW="7xl">
             <Stack align="center" spacing={{ base: 8, md: 10 }} direction="column">
                 <Stack flex={1} spacing={{ base: 2, md: 5 }}>
-                    <ErrorToast errorMsg={error} />
                     <Box mt="4" maxW="sm">
                     <Button onClick={onNavHome} ml="4" mr="12">
                         Go Home

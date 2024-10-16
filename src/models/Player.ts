@@ -13,3 +13,33 @@ export type Player = {
     team: Team;
     position: Position;
 };
+
+export const defaultPlayer = {
+    id: "",
+    displayName: "",
+    headshot: "",
+    jersey: "",
+    height: 0,
+    weight: 0,
+    dateOfBirth: new Date(),
+    debutYear: 0,
+    team: {
+        displayName: "",
+        shortDisplayName: "",
+        logo: "",
+        abbreviation: "",
+        group: {
+            isConference: true,
+            name: "",
+            logo: "",
+            abbreviation: "",
+            parent: null,
+        },
+    },
+    position: {
+        name: "",
+        displayName: "",
+        abbreviation: "",
+        parent: null,
+    },
+}

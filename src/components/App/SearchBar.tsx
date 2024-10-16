@@ -9,15 +9,16 @@ import { useSportContext } from "~/contexts/SportContext";
 import { useAllPlayerNames } from "~/hooks/data/useAllPlayerNames";
 import type { PlayerName } from "~/models/PlayerName";
 
+export type Item = {
+    label: string;
+    value: string;
+};
+
 type SearchBarProps = {
     submitAction: (player: PlayerName) => void;
     disabled: boolean;
 };
 
-export type Item = {
-    label: string;
-    value: string;
-};
 
 const extractPlayerToItem = (player: PlayerName): Option => {
     const selectItem: Option = {
